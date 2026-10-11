@@ -4,7 +4,7 @@
 
 {% macro workTile(work, lang) -%}
 <li class="tile" style="--ar: {{ (work.image.width / work.image.height) | round(3) }}" data-technique="{{ work.technique.key if work.technique else '' }}">
-  <a href="{{ 'work' | pageUrl(lang, work.id) }}">{{ artImage(work.image, work.alt[lang], '(min-width: 1200px) 400px, (min-width: 480px) 50vw, 100vw') }}</a>
+  <a href="{{ 'work' | pageUrl(lang, work.id) }}">{{ artImage(work.image, work.alt[lang], work.image | tileSizes) }}</a>
 </li>
 {%- endmacro %}
 

@@ -107,7 +107,7 @@ main { padding-bottom: 64px; }
 /* Exhibitions */
 .ex { display: grid; gap: 16px; padding-block: 24px; border-top: 1px solid var(--line); }
 @media (min-width: 600px) { .ex:has(.ex__image) { grid-template-columns: 180px 1fr; } }
-.ex__image img { max-width: 220px; }
+.ex__image img { max-width: min(100%, 220px); }
 .ex h3 { margin-bottom: 0.25em; }
 .ex__place { color: var(--muted); }
 .ex-group .section-title { margin-bottom: 8px; }

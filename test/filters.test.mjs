@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { pageUrl, absoluteUrl, dateRange, paragraphs, srcset, imgSrc } from '../src/_lib/filters.js';
+import { pageUrl, absoluteUrl, dateRange, paragraphs, srcset, imgSrc, tileSizes } from '../src/_lib/filters.js';
 
 test('pageUrl builds language-specific URLs, including work detail pages', () => {
   assert.equal(pageUrl('home', 'nl'), '/');
@@ -35,4 +35,9 @@ test('srcset and imgSrc use the processed widths', () => {
   assert.equal(srcset(image), '/img/w/3f2a9c1e/w480.webp 480w, /img/w/3f2a9c1e/w700.webp 700w');
   assert.equal(imgSrc(image, 960), '/img/w/3f2a9c1e/w700.webp');
   assert.equal(imgSrc(image, 400), '/img/w/3f2a9c1e/w480.webp');
+});
+
+test('tileSizes asks for tiles as wide as a justified row can stretch them', () => {
+  assert.equal(tileSizes({ width: 1600, height: 1100 }), '(min-width: 1200px) 693px, (min-width: 700px) 594px, (min-width: 480px) 446px, 100vw');
+  assert.equal(tileSizes({ width: 1800, height: 600 }), '(min-width: 1200px) 1136px, (min-width: 700px) 1136px, (min-width: 480px) 918px, 100vw');
 });

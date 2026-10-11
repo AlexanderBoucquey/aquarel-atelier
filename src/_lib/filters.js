@@ -56,3 +56,14 @@ export function imgSrc(image, preferred = 960) {
   const width = image.widths.find((w) => w >= preferred) ?? image.widths.at(-1);
   return `/img/${image.dir}/w${width}.webp`;
 }
+
+// Widest a gallery tile can get, per unit of aspect ratio, from each breakpoint up: row height (--row-h in
+// style.css) × 1.7, because justified rows stretch tiles to fill the line. 1136px is the widest content width.
+const TILE_WIDTH_PER_AR = [[1200, 476], [700, 408], [480, 306]];
+const CONTENT_WIDTH = 1136;
+
+/** sizes attribute for a gallery tile, so the browser picks a sharp enough variant. */
+export function tileSizes(image) {
+  const sizes = TILE_WIDTH_PER_AR.map(([minWidth, perAr]) => `(min-width: ${minWidth}px) ${Math.min(CONTENT_WIDTH, Math.ceil((perAr * image.width) / image.height))}px`);
+  return [...sizes, '100vw'].join(', ');
+}

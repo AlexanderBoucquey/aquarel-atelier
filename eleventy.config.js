@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { HtmlBasePlugin } from '@11ty/eleventy';
-import { pageUrl, absoluteUrl, dateRange, paragraphs, srcset, imgSrc } from './src/_lib/filters.js';
+import { pageUrl, absoluteUrl, dateRange, paragraphs, srcset, imgSrc, tileSizes } from './src/_lib/filters.js';
 
 const config = JSON.parse(readFileSync('site.config.json', 'utf8'));
 
@@ -24,6 +24,7 @@ export default function (eleventyConfig) {
   eleventyConfig.addFilter('paragraphs', paragraphs);
   eleventyConfig.addFilter('srcset', srcset);
   eleventyConfig.addFilter('imgSrc', imgSrc);
+  eleventyConfig.addFilter('tileSizes', tileSizes);
 
   return {
     dir: { input: 'src', includes: '_includes', data: '_data' }, // output: Eleventy's default _site (a config value would override the API's output dir)
