@@ -84,3 +84,9 @@ test('sitemap lists work pages with absolute URLs', async () => {
 test('404 page exists', () => {
   assert.ok(existsSync(join(out, '404.html')));
 });
+
+test('stylesheet, script, fonts, favicon and portrait are published', () => {
+  for (const file of ['assets/css/style.css', 'assets/js/site.js', 'assets/favicon.svg', 'assets/img/portrait.webp', 'assets/fonts/cormorant-garamond-600.woff2', 'assets/fonts/source-sans-3-400.woff2']) {
+    assert.ok(existsSync(join(out, file)), file);
+  }
+});
