@@ -1,0 +1,48 @@
+---
+layout: base.njk
+pagination:
+  data: langs
+  size: 1
+  alias: lang
+permalink: "{{ 'home' | pageUrl(lang) }}"
+pageKey: home
+---
+{%- import "macros.njk" as m -%}
+{%- set t = i18n[lang] -%}
+{%- set hero = atelier.hero -%}
+{%- if hero %}
+<section class="hero">
+  <a class="hero__image" href="{{ 'work' | pageUrl(lang, hero.id) }}">{{ m.artImage(hero.image, hero.alt[lang], '(min-width: 1200px) 1136px, 100vw', 'eager', 1600) }}</a>
+  {%- if hero.title[lang] %}
+  <p class="hero__caption">{{ hero.title[lang] }}{% if hero.meta[lang] %} · {{ hero.meta[lang] }}{% endif %}</p>
+  {%- endif %}
+</section>
+{%- else %}
+<p class="wrap empty">{{ t.work.empty }}</p>
+{%- endif %}
+{%- if atelier.texts.home_intro %}
+<section class="intro wrap-narrow">{{ atelier.texts.home_intro[lang] | paragraphs | safe }}</section>
+{%- endif %}
+{%- if atelier.banner %}
+{%- set e = atelier.banner %}
+<section class="event-card wrap-narrow" data-event-card{% if e.end %} data-until="{{ e.end }}"{% endif %}>
+  {%- if e.image %}
+  {{ m.artImage(e.image, e.title[lang], '(min-width: 600px) 200px, 100vw', 'lazy', 480) }}
+  {%- endif %}
+  <div>
+    <p class="eyebrow">{{ t.banner.label }}</p>
+    {%- if e.title[lang] %}
+    <h2>{{ e.title[lang] }}</h2>
+    {%- endif %}
+    <p class="meta">{{ e.from | dateRange(e.to, lang) }}{% if e.place %} · {{ e.place }}{% endif %}</p>
+    <p><a href="{{ 'exhibitions' | pageUrl(lang) }}#e-{{ e.key }}">{{ t.exhibitions.moreInfo }}</a></p>
+  </div>
+</section>
+{%- endif %}
+{%- if atelier.homeWorks.length %}
+<section class="wrap">
+  <h2 class="section-title">{{ t.home.more }}</h2>
+  <ul class="tiles">{% for w in atelier.homeWorks %}{{ m.workTile(w, lang) }}{% endfor %}</ul>
+  <p class="more"><a href="{{ 'work' | pageUrl(lang) }}">{{ t.home.allWork }} →</a></p>
+</section>
+{%- endif %}

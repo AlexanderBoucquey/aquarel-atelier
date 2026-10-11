@@ -1,0 +1,30 @@
+---
+layout: base.njk
+pagination:
+  data: atelier.workPages
+  size: 1
+  alias: wp
+permalink: "{{ 'work' | pageUrl(wp.lang, wp.work.id) }}"
+pageKey: work
+eleventyComputed:
+  lang: "{{ wp.lang }}"
+---
+{%- import "macros.njk" as m -%}
+{%- set t = i18n[lang] -%}
+{%- set w = wp.work -%}
+<article class="work">
+  <figure class="work__figure wrap">{{ m.artImage(w.image, w.alt[lang], '(min-width: 1200px) 1136px, 100vw', 'eager', 1600) }}</figure>
+  <div class="work__text wrap-narrow">
+    <h1{% if not w.title[lang] %} class="visually-hidden"{% endif %}>{{ w.title[lang] or w.alt[lang] }}</h1>
+    {%- if w.meta[lang] %}
+    <p class="meta">{{ w.meta[lang] }}</p>
+    {%- endif %}
+    {{ w.description[lang] | paragraphs | safe }}
+    <p class="work__contact"><a href="{{ 'contact' | pageUrl(lang) }}">{{ t.work.question }}</a></p>
+    <nav class="pager" aria-label="{{ t.work.pagerLabel }}">
+      <span>{% if wp.prev %}<a rel="prev" href="{{ 'work' | pageUrl(lang, wp.prev.id) }}">← {{ t.work.prev }}</a>{% endif %}</span>
+      <a href="{{ 'work' | pageUrl(lang) }}">{{ t.work.backToAll }}</a>
+      <span>{% if wp.next %}<a rel="next" href="{{ 'work' | pageUrl(lang, wp.next.id) }}">{{ t.work.next }} →</a>{% endif %}</span>
+    </nav>
+  </div>
+</article>

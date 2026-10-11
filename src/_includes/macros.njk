@@ -1,0 +1,32 @@
+{% macro artImage(image, alt, sizes, loading = 'lazy', preferred = 960) -%}
+<img src="{{ image | imgSrc(preferred) }}" srcset="{{ image | srcset }}" sizes="{{ sizes }}" width="{{ image.width }}" height="{{ image.height }}" alt="{{ alt }}" loading="{{ loading }}" decoding="async">
+{%- endmacro %}
+
+{% macro workTile(work, lang) -%}
+<li class="tile" style="--ar: {{ (work.image.width / work.image.height) | round(3) }}" data-technique="{{ work.technique.key if work.technique else '' }}">
+  <a href="{{ 'work' | pageUrl(lang, work.id) }}">{{ artImage(work.image, work.alt[lang], '(min-width: 1200px) 400px, (min-width: 480px) 50vw, 100vw') }}</a>
+</li>
+{%- endmacro %}
+
+{% macro exhibition(e, lang, t) -%}
+<article class="ex" id="e-{{ e.key }}">
+  {%- if e.image %}
+  <div class="ex__image">{{ artImage(e.image, e.title[lang], '(min-width: 600px) 180px, 100vw', 'lazy', 480) }}</div>
+  {%- endif %}
+  <div class="ex__body">
+    {%- if e.from or e.to %}
+    <p class="meta">{{ e.from | dateRange(e.to, lang) }}</p>
+    {%- endif %}
+    {%- if e.title[lang] %}
+    <h3>{{ e.title[lang] }}</h3>
+    {%- endif %}
+    {%- if e.place or e.address %}
+    <p class="ex__place">{{ e.place }}{% if e.place and e.address %}<br>{% endif %}{{ e.address }}</p>
+    {%- endif %}
+    {{ e.text[lang] | paragraphs | safe }}
+    {%- if e.link %}
+    <p><a href="{{ e.link }}" rel="noopener">{{ t.exhibitions.moreInfo }}</a></p>
+    {%- endif %}
+  </div>
+</article>
+{%- endmacro %}

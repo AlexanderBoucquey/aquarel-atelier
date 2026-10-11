@@ -1,0 +1,13 @@
+---
+permalink: /sitemap.xml
+eleventyExcludeFromCollections: true
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+{%- for key in ['home', 'work', 'exhibitions', 'about', 'contact'] %}{% for lang in langs %}
+  <url><loc>{{ key | pageUrl(lang) | absUrl }}</loc></url>
+{%- endfor %}{% endfor %}
+{%- for p in atelier.workPages %}
+  <url><loc>{{ 'work' | pageUrl(p.lang, p.work.id) | absUrl }}</loc></url>
+{%- endfor %}
+</urlset>

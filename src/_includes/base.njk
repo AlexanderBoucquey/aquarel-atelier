@@ -1,0 +1,55 @@
+{%- set t = i18n[lang] -%}
+{%- set otherLang = 'en' if lang == 'nl' else 'nl' -%}
+{%- set workId = wp.work.id if wp else null -%}
+{%- set hasRoute = site.routes[pageKey] -%}
+{%- if wp -%}
+  {%- set pageTitle = wp.work.alt[lang] + ' — Dirk Vermoesen' -%}
+  {%- set pageDescription = (wp.work.description[lang] or wp.work.alt[lang]) | truncate(155) -%}
+  {%- set ogImage = wp.work.image -%}
+{%- else -%}
+  {%- set pageTitle = t.pages[pageKey].title -%}
+  {%- set pageDescription = t.pages[pageKey].description -%}
+  {%- set ogImage = atelier.hero.image if atelier.hero else null -%}
+{%- endif -%}
+<!doctype html>
+<html lang="{{ lang }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ pageTitle }}</title>
+<meta name="description" content="{{ pageDescription }}">
+{%- if hasRoute %}
+<link rel="canonical" href="{{ pageKey | pageUrl(lang, workId) | absUrl }}">
+<link rel="alternate" hreflang="nl" href="{{ pageKey | pageUrl('nl', workId) | absUrl }}">
+<link rel="alternate" hreflang="en" href="{{ pageKey | pageUrl('en', workId) | absUrl }}">
+<link rel="alternate" hreflang="x-default" href="{{ pageKey | pageUrl('nl', workId) | absUrl }}">
+<meta property="og:url" content="{{ pageKey | pageUrl(lang, workId) | absUrl }}">
+{%- endif %}
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Dirk Vermoesen">
+<meta property="og:title" content="{{ pageTitle }}">
+<meta property="og:description" content="{{ pageDescription }}">
+<meta property="og:locale" content="{{ t.ogLocale }}">
+{%- if ogImage %}
+<meta property="og:image" content="{{ ('/img/' + ogImage.dir + '/og.jpg') | absUrl }}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+{%- endif %}
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="/assets/fonts/cormorant-garamond-600.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/css/style.css">
+<script src="/assets/js/site.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#main">{{ t.skip }}</a>
+{%- if atelier.banner and pageKey != 'exhibitions' %}
+{% include "banner.njk" %}
+{%- endif %}
+{% include "header.njk" %}
+<main id="main">
+{{ content | safe }}
+</main>
+{% include "footer.njk" %}
+</body>
+</html>

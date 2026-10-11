@@ -1,0 +1,13 @@
+---
+layout: base.njk
+permalink: /404.html
+lang: nl
+pageKey: notFound
+eleventyExcludeFromCollections: true
+---
+{%- set t = i18n.nl -%}
+<div class="wrap-narrow">
+  <h1 class="page-title">{{ t.notFound.heading }}</h1>
+  <p>{{ t.notFound.text }} <a href="{{ 'work' | pageUrl('nl') }}">{{ t.notFound.back }}</a></p>
+  <p lang="en">{{ i18n.en.notFound.text }} <a href="{{ 'work' | pageUrl('en') }}">{{ i18n.en.notFound.back }}</a></p>
+</div>

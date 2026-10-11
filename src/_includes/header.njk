@@ -1,0 +1,18 @@
+<header class="site-header">
+  <div class="wrap site-header__inner">
+    <a class="wordmark" href="{{ 'home' | pageUrl(lang) }}">
+      <span class="wordmark__name">Dirk Vermoesen</span>
+      <span class="wordmark__tagline">{{ t.tagline }}</span>
+    </a>
+    <nav class="site-nav" aria-label="{{ t.nav.label }}">
+      <ul>
+        {%- for key in ['work', 'exhibitions', 'about', 'contact'] %}
+        <li><a href="{{ key | pageUrl(lang) }}"{% if pageKey == key %} aria-current="{{ 'true' if wp else 'page' }}"{% endif %}>{{ t.nav[key] }}</a></li>
+        {%- endfor %}
+      </ul>
+      {%- if hasRoute %}
+      <a class="lang-switch" href="{{ pageKey | pageUrl(otherLang, workId) }}" hreflang="{{ otherLang }}" lang="{{ otherLang }}" title="{{ i18n[otherLang].langName }}">{{ i18n[otherLang].langShort }}</a>
+      {%- endif %}
+    </nav>
+  </div>
+</header>

@@ -1,0 +1,39 @@
+---
+layout: base.njk
+pagination:
+  data: langs
+  size: 1
+  alias: lang
+permalink: "{{ 'exhibitions' | pageUrl(lang) }}"
+pageKey: exhibitions
+---
+{%- import "macros.njk" as m -%}
+{%- set t = i18n[lang] -%}
+{%- set ex = atelier.exhibitions -%}
+<div class="wrap-narrow">
+  <h1 class="page-title">{{ t.exhibitions.heading }}</h1>
+  <section class="ex-group">
+    <h2 class="section-title">{{ t.exhibitions.upcoming }}</h2>
+    {%- for e in ex.upcoming %}
+    {{ m.exhibition(e, lang, t) }}
+    {%- else %}
+    <p class="empty">{{ t.exhibitions.noneUpcoming }}</p>
+    {%- endfor %}
+  </section>
+  {%- if ex.past.length %}
+  <section class="ex-group">
+    <h2 class="section-title">{{ t.exhibitions.past }}</h2>
+    {%- for e in ex.past %}
+    {{ m.exhibition(e, lang, t) }}
+    {%- endfor %}
+  </section>
+  {%- endif %}
+  {%- if ex.other.length %}
+  <section class="ex-group">
+    <h2 class="section-title">{{ t.exhibitions.other }}</h2>
+    {%- for e in ex.other %}
+    {{ m.exhibition(e, lang, t) }}
+    {%- endfor %}
+  </section>
+  {%- endif %}
+</div>

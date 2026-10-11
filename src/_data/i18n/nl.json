@@ -1,0 +1,48 @@
+{
+  "langShort": "NL",
+  "langName": "Nederlands",
+  "ogLocale": "nl_BE",
+  "skip": "Naar de inhoud",
+  "tagline": "Aquarel · Tekening · Olieverf",
+  "nav": { "label": "Hoofdmenu", "work": "Werk", "exhibitions": "Tentoonstellingen", "about": "Over Dirk", "contact": "Contact" },
+  "pages": {
+    "home": { "title": "Dirk Vermoesen — Aquarel · Tekening · Olieverf", "description": "Aquarellen, tekeningen en olieverfschilderijen van Dirk Vermoesen uit Brasschaat." },
+    "work": { "title": "Werk — Dirk Vermoesen", "description": "Aquarellen, tekeningen en olieverfschilderijen van Dirk Vermoesen." },
+    "exhibitions": { "title": "Tentoonstellingen — Dirk Vermoesen", "description": "Komende en voorbije tentoonstellingen van Dirk Vermoesen." },
+    "about": { "title": "Over Dirk Vermoesen", "description": "Over Dirk Vermoesen, kunstenaar in Brasschaat." },
+    "contact": { "title": "Contact — Dirk Vermoesen", "description": "Contactgegevens van Dirk Vermoesen, Veldstraat 258, 2930 Brasschaat." },
+    "notFound": { "title": "Pagina niet gevonden — Dirk Vermoesen", "description": "Deze pagina bestaat niet (meer)." }
+  },
+  "home": { "more": "Meer werk", "allWork": "Bekijk al het werk" },
+  "work": {
+    "heading": "Werk",
+    "filterLabel": "Filter op techniek",
+    "filterAll": "Alles",
+    "prev": "Vorige",
+    "next": "Volgende",
+    "backToAll": "Al het werk",
+    "pagerLabel": "Andere werken",
+    "question": "Vragen over dit werk? Neem gerust contact op.",
+    "empty": "Binnenkort is hier werk te zien."
+  },
+  "exhibitions": {
+    "heading": "Tentoonstellingen",
+    "upcoming": "Binnenkort",
+    "past": "Eerder",
+    "other": "Doorlopend",
+    "noneUpcoming": "Er staan op dit moment geen tentoonstellingen gepland.",
+    "moreInfo": "Meer info"
+  },
+  "banner": { "label": "Tentoonstelling", "more": "Meer info", "close": "Melding sluiten" },
+  "about": { "heading": "Over Dirk", "portraitAlt": "Getekend zelfportret van Dirk Vermoesen" },
+  "contact": {
+    "heading": "Contact",
+    "intro": "Wil je een werk van dichtbij zien of heb je een vraag? Mail of bel gerust.",
+    "email": "E-mail",
+    "phone": "Telefoon",
+    "address": "Adres",
+    "route": "Route plannen",
+    "follow": "Volgen"
+  },
+  "notFound": { "heading": "Pagina niet gevonden", "text": "Deze pagina bestaat niet (meer).", "back": "Naar al het werk" }
+}

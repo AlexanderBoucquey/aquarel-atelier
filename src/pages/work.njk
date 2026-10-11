@@ -1,0 +1,27 @@
+---
+layout: base.njk
+pagination:
+  data: langs
+  size: 1
+  alias: lang
+permalink: "{{ 'work' | pageUrl(lang) }}"
+pageKey: work
+---
+{%- import "macros.njk" as m -%}
+{%- set t = i18n[lang] -%}
+<div class="wrap">
+  <h1 class="page-title">{{ t.work.heading }}</h1>
+  {%- if atelier.techniques.length > 1 %}
+  <div class="filters" data-filters role="group" aria-label="{{ t.work.filterLabel }}" hidden>
+    <button type="button" data-filter="" aria-pressed="true">{{ t.work.filterAll }}</button>
+    {%- for tech in atelier.techniques %}
+    <button type="button" data-filter="{{ tech.key }}" aria-pressed="false">{{ tech.label[lang] }}</button>
+    {%- endfor %}
+  </div>
+  {%- endif %}
+  {%- if atelier.works.length %}
+  <ul class="tiles" data-tiles>{% for w in atelier.works %}{{ m.workTile(w, lang) }}{% endfor %}</ul>
+  {%- else %}
+  <p class="empty">{{ t.work.empty }}</p>
+  {%- endif %}
+</div>

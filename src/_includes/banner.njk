@@ -1,0 +1,11 @@
+{%- set b = atelier.banner -%}
+<aside class="event-strip" data-event-strip data-key="{{ b.key }}"{% if b.end %} data-until="{{ b.end }}"{% endif %} aria-label="{{ t.banner.label }}">
+  <div class="wrap event-strip__inner">
+    <p><span class="event-strip__label">{{ t.banner.label }}</span>
+      <a href="{{ 'exhibitions' | pageUrl(lang) }}#e-{{ b.key }}">{{ b.title[lang] or t.banner.more }}</a>
+      {%- if b.from or b.to %} · {{ b.from | dateRange(b.to, lang, true) }}{% endif %}
+      {%- if b.place %} · {{ b.place }}{% endif %}</p>
+    <button type="button" class="event-strip__close" data-dismiss aria-label="{{ t.banner.close }}" hidden>&times;</button>
+  </div>
+</aside>
+<script>(function (strip) { try { if (localStorage.getItem('event-dismissed-' + strip.dataset.key) === '1') strip.remove(); } catch (e) {} })(document.currentScript.previousElementSibling);</script>

@@ -1,0 +1,10 @@
+{%- set c = site.contact -%}
+<footer class="site-footer">
+  <div class="wrap">
+    <p class="site-footer__name">Dirk Vermoesen</p>
+    <p>{{ c.street }}, {{ c.postal }} {{ c.city }}<br>
+      <a href="{{ c.phoneHref }}">{{ c.phone }}</a> · <a href="mailto:{{ c.email }}">{{ c.email }}</a></p>
+    <p><a href="{{ c.instagram.url }}" rel="me">Instagram</a> · <a href="{{ c.facebook.url }}" rel="me">Facebook</a></p>
+    <p class="site-footer__copy">© {{ site.year }} Dirk Vermoesen</p>
+  </div>
+</footer>

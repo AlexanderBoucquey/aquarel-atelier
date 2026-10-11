@@ -1,0 +1,19 @@
+---
+layout: base.njk
+pagination:
+  data: langs
+  size: 1
+  alias: lang
+permalink: "{{ 'about' | pageUrl(lang) }}"
+pageKey: about
+---
+{%- set t = i18n[lang] -%}
+<div class="wrap about">
+  <img class="about__portrait" src="/assets/img/portrait.webp" width="{{ site.portrait.width }}" height="{{ site.portrait.height }}" alt="{{ t.about.portraitAlt }}">
+  <div class="about__text">
+    <h1 class="page-title">{{ t.about.heading }}</h1>
+    {%- if atelier.texts.about %}
+    {{ atelier.texts.about[lang] | paragraphs | safe }}
+    {%- endif %}
+  </div>
+</div>

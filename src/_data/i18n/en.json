@@ -1,0 +1,48 @@
+{
+  "langShort": "EN",
+  "langName": "English",
+  "ogLocale": "en_GB",
+  "skip": "Skip to content",
+  "tagline": "Watercolour · Drawing · Oil painting",
+  "nav": { "label": "Main menu", "work": "Work", "exhibitions": "Exhibitions", "about": "About Dirk", "contact": "Contact" },
+  "pages": {
+    "home": { "title": "Dirk Vermoesen — Watercolour · Drawing · Oil painting", "description": "Watercolours, drawings and oil paintings by Dirk Vermoesen from Brasschaat, Belgium." },
+    "work": { "title": "Work — Dirk Vermoesen", "description": "Watercolours, drawings and oil paintings by Dirk Vermoesen." },
+    "exhibitions": { "title": "Exhibitions — Dirk Vermoesen", "description": "Upcoming and past exhibitions of Dirk Vermoesen." },
+    "about": { "title": "About Dirk Vermoesen", "description": "About Dirk Vermoesen, artist in Brasschaat, Belgium." },
+    "contact": { "title": "Contact — Dirk Vermoesen", "description": "Contact details of Dirk Vermoesen, Veldstraat 258, 2930 Brasschaat, Belgium." },
+    "notFound": { "title": "Page not found — Dirk Vermoesen", "description": "This page does not exist (anymore)." }
+  },
+  "home": { "more": "More work", "allWork": "See all work" },
+  "work": {
+    "heading": "Work",
+    "filterLabel": "Filter by technique",
+    "filterAll": "All",
+    "prev": "Previous",
+    "next": "Next",
+    "backToAll": "All work",
+    "pagerLabel": "Other works",
+    "question": "Questions about this work? Feel free to get in touch.",
+    "empty": "Work will be shown here soon."
+  },
+  "exhibitions": {
+    "heading": "Exhibitions",
+    "upcoming": "Coming up",
+    "past": "Earlier",
+    "other": "Ongoing",
+    "noneUpcoming": "No exhibitions are planned at the moment.",
+    "moreInfo": "More info"
+  },
+  "banner": { "label": "Exhibition", "more": "More info", "close": "Close announcement" },
+  "about": { "heading": "About Dirk", "portraitAlt": "Drawn self-portrait of Dirk Vermoesen" },
+  "contact": {
+    "heading": "Contact",
+    "intro": "Would you like to see a work in person, or do you have a question? Feel free to email or call.",
+    "email": "Email",
+    "phone": "Phone",
+    "address": "Address",
+    "route": "Get directions",
+    "follow": "Follow"
+  },
+  "notFound": { "heading": "Page not found", "text": "This page does not exist (anymore).", "back": "Go to all work" }
+}
