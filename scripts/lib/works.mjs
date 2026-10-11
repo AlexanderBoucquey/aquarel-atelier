@@ -5,7 +5,12 @@ const IMAGE_EXTENSIONS = /\.(jpe?g|png|webp|heic|heif|tiff?|avif|gif)$/i;
 
 /** Can this Drive file be shown as a picture? */
 export function isImageFile(file) {
-  return (file.mimeType ?? '').startsWith('image/') || IMAGE_EXTENSIONS.test(file.name ?? '');
+  const mimeType = file.mimeType ?? '';
+  if (mimeType.startsWith('image/')) return true;
+  // Shortcuts, Google Docs, PDFs… are never photos, even when named "x.jpg"; the extension only decides when
+  // Drive does not know the type.
+  if (mimeType && mimeType !== 'application/octet-stream') return false;
+  return IMAGE_EXTENSIONS.test(file.name ?? '');
 }
 
 const KNOWN_TECHNIQUES = [
@@ -35,11 +40,18 @@ const TEXT_COLUMNS = ['titel nl', 'titel en', 'techniek', 'jaar', 'afmetingen', 
 
 /**
  * Join the photos in Werken/ with the rows of the Werken tab. Every column is optional: a photo without a row is
- * published as image only, and a row only hides its photo when Tonen is unticked. Rows match on the hidden ID
- * column, else on file name. Photos without a row come first (newest first), then rows in sheet order.
+ * published as image only, and a row only hides its photo when Tonen is unticked. Rows with a known ID claim their
+ * photo first; the other rows match on file name among the photos still unclaimed. Photos without a row come first
+ * (newest first), then rows in sheet order.
+ * Throws when the tab has rows but neither a Bestand nor an ID column: rows could not be matched, and publishing every
+ * photo would also publish hidden works.
  */
 export function buildWorks(records, files, uuidByDriveId) {
+  if (records.length && !records.some((row) => 'id' in row || 'bestand' in row)) {
+    throw new Error('Tabblad Werken: de kolommen "Bestand" en "ID" ontbreken (kopregel gewijzigd of verwijderd?). De website wordt niet bijgewerkt tot dit hersteld is.');
+  }
   const warnings = [];
+  if (records.length && !('tonen' in records[0])) warnings.push('Werken: kolom "Tonen" ontbreekt; alle foto\'s worden getoond.');
   const photos = [];
   for (const file of files) {
     if (isImageFile(file)) photos.push(file);
@@ -49,12 +61,20 @@ export function buildWorks(records, files, uuidByDriveId) {
   const byName = new Map();
   for (const f of photos) {
     const name = f.name.trim().toLowerCase();
-    if (!byName.has(name)) byName.set(name, f);
+    byName.set(name, [...(byName.get(name) ?? []), f]);
   }
 
   const claimed = new Set();
-  const listed = [];
+  const fileOf = new Map();
   for (const row of records) {
+    const file = byId.get(text(row.id));
+    if (file && !claimed.has(file.id)) {
+      claimed.add(file.id);
+      fileOf.set(row, file);
+    }
+  }
+  for (const row of records) {
+    if (fileOf.has(row)) continue;
     const id = text(row.id);
     const name = text(row.bestand);
     if (!id && !name) {
@@ -63,19 +83,22 @@ export function buildWorks(records, files, uuidByDriveId) {
       }
       continue;
     }
-    const file = byId.get(id) ?? byName.get(name.toLowerCase());
-    if (!file) {
-      warnings.push(`Werken, rij ${row.rowNumber}: foto "${name || id}" niet gevonden in de map Werken.`);
+    const sameName = byName.get(name.toLowerCase()) ?? [];
+    const file = sameName.find((f) => !claimed.has(f.id));
+    if (file) {
+      claimed.add(file.id);
+      fileOf.set(row, file);
       continue;
     }
-    if (claimed.has(file.id)) {
-      warnings.push(`Werken, rij ${row.rowNumber}: "${file.name}" staat al in een rij hierboven; deze rij wordt genegeerd.`);
-      continue;
-    }
-    claimed.add(file.id);
-    if (bool(row.tonen, true)) listed.push(toWork(file, row, uuidByDriveId));
+    const taken = byId.get(id) ?? sameName[0];
+    warnings.push(taken
+      ? `Werken, rij ${row.rowNumber}: "${taken.name}" staat al in een andere rij; deze rij wordt genegeerd.`
+      : `Werken, rij ${row.rowNumber}: foto "${name || id}" niet gevonden in de map Werken.`);
   }
 
+  const listed = records
+    .filter((row) => fileOf.has(row) && bool(row.tonen, true))
+    .map((row) => toWork(fileOf.get(row), row, uuidByDriveId));
   const unlisted = photos
     .filter((f) => !claimed.has(f.id))
     .sort((a, b) => (b.createdTime ?? '').localeCompare(a.createdTime ?? ''))

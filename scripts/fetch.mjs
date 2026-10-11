@@ -28,6 +28,48 @@ export function findFolder(children, name) {
   return children.find((f) => f.mimeType === FOLDER_MIME && sameName(f.name, name)) ?? null;
 }
 
+/**
+ * Problems that must stop the build: without the Werken tab every photo would be published (hidden ones too),
+ * without the Werken folder the gallery would be empty. The previous version of the site then stays online.
+ */
+export function structureProblems(tabs, children) {
+  const problems = [];
+  if (!tabs.werken) problems.push('Tabblad "Werken" niet gevonden in de Sheet (hernoemd of verwijderd?).');
+  if (!findFolder(children, FOLDERS.werken)) problems.push('Map "Werken" niet gevonden in de websitemap (hernoemd of verwijderd?).');
+  return problems;
+}
+
+/**
+ * Download new or changed photos. A file Google refuses to hand out (4xx, e.g. a shortcut) is skipped with a
+ * warning; server and network errors fail the build.
+ * @param {(photo, target: string) => Promise<void>} download
+ * @returns {Promise<{ manifest: Record<string, string>, warnings: string[], downloaded: number }>}
+ */
+export async function downloadPhotos(photos, { dir, manifest, download }) {
+  const next = {};
+  const warnings = [];
+  let downloaded = 0;
+  for (const photo of photos) {
+    const target = join(dir, originalName(photo.id, photo.name));
+    if (manifest[photo.id] === photo.modifiedTime && existsSync(target)) {
+      next[photo.id] = photo.modifiedTime;
+      continue;
+    }
+    try {
+      await download(photo, target);
+    } catch (err) {
+      if (err.status >= 400 && err.status < 500) {
+        warnings.push(`Foto "${photo.name}" kon niet gedownload worden (${err.status}); ze wordt overgeslagen.`);
+        continue;
+      }
+      throw err;
+    }
+    next[photo.id] = photo.modifiedTime;
+    downloaded++;
+  }
+  return { manifest: next, warnings, downloaded };
+}
+
 async function main() {
   const config = JSON.parse(await readFile('site.config.json', 'utf8'));
   const { folderId, sheetId } = config.google ?? {};
@@ -42,7 +84,11 @@ async function main() {
   const request = async (url) => {
     const { token } = await client.getAccessToken();
     const response = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
-    if (!response.ok) throw new Error(`Google API ${response.status} for ${url.split('?')[0]}: ${await response.text()}`);
+    if (!response.ok) {
+      const err = new Error(`Google API ${response.status} for ${url.split('?')[0]}: ${await response.text()}`);
+      err.status = response.status;
+      throw err;
+    }
     return response;
   };
   const json = async (url) => (await request(url)).json();
@@ -66,29 +112,31 @@ async function main() {
     return files;
   };
 
-  // Folders
+  const warnings = [];
   const children = await listChildren(folderId);
+  const spreadsheet = await json(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}?fields=sheets.properties.title`);
+  const tabs = matchTabs(spreadsheet.sheets.map((s) => s.properties.title));
+  const problems = structureProblems(tabs, children);
+  if (problems.length) throw new Error(`${problems.join('\n')}\nDe website wordt niet bijgewerkt tot dit hersteld is; de vorige versie blijft online.`);
+
+  // Folders
   const folders = {};
   for (const [key, name] of Object.entries(FOLDERS)) {
     const folder = findFolder(children, name);
-    if (!folder) console.warn(`Map "${name}" niet gevonden in de websitemap; die wordt als leeg beschouwd.`);
+    if (!folder) warnings.push(`Map "${name}" niet gevonden in de websitemap; die wordt als leeg beschouwd.`);
     folders[key] = folder ? (await listChildren(folder.id)).filter((f) => f.mimeType !== FOLDER_MIME) : [];
   }
 
   // Sheet tabs
-  const spreadsheet = await json(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}?fields=sheets.properties.title`);
-  const tabs = matchTabs(spreadsheet.sheets.map((s) => s.properties.title));
   const sheets = { werken: [], tentoonstellingen: [], teksten: [] };
+  for (const [key, title] of Object.entries(tabs)) if (!title) warnings.push(`Tabblad "${TABS[key]}" niet gevonden in de Sheet.`);
   const present = Object.entries(tabs).filter(([, title]) => title);
-  for (const [key, title] of Object.entries(tabs)) if (!title) console.warn(`Tabblad "${TABS[key]}" niet gevonden in de Sheet.`);
-  if (present.length) {
-    const params = new URLSearchParams({ valueRenderOption: 'UNFORMATTED_VALUE', dateTimeRenderOption: 'SERIAL_NUMBER' });
-    for (const [, title] of present) params.append('ranges', `'${title.replaceAll("'", "''")}'`);
-    const data = await json(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values:batchGet?${params}`);
-    present.forEach(([key], i) => {
-      sheets[key] = data.valueRanges[i].values ?? [];
-    });
-  }
+  const params = new URLSearchParams({ valueRenderOption: 'UNFORMATTED_VALUE', dateTimeRenderOption: 'SERIAL_NUMBER' });
+  for (const [, title] of present) params.append('ranges', `'${title.replaceAll("'", "''")}'`);
+  const data = await json(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values:batchGet?${params}`);
+  present.forEach(([key], i) => {
+    sheets[key] = data.valueRanges[i].values ?? [];
+  });
 
   // Photos: download new or changed originals only
   await mkdir(ORIGINALS, { recursive: true });
@@ -97,22 +145,18 @@ async function main() {
     manifest = JSON.parse(await readFile(MANIFEST, 'utf8'));
   } catch {}
   const photos = [...folders.werken, ...folders.tentoonstellingen].filter(isImageFile);
-  let downloaded = 0;
-  for (const photo of photos) {
-    const target = join(ORIGINALS, originalName(photo.id, photo.name));
-    if (manifest[photo.id] === photo.modifiedTime && existsSync(target)) continue;
+  const download = async (photo, target) => {
     const response = await request(`https://www.googleapis.com/drive/v3/files/${photo.id}?alt=media&supportsAllDrives=true`);
     await pipeline(Readable.fromWeb(response.body), createWriteStream(target));
-    manifest[photo.id] = photo.modifiedTime;
-    downloaded++;
-  }
-  const keep = new Set(photos.map((p) => p.id));
-  await prune(ORIGINALS, keep);
-  manifest = Object.fromEntries(Object.entries(manifest).filter(([id]) => keep.has(id)));
-  await writeFile(MANIFEST, JSON.stringify(manifest));
+  };
+  const result = await downloadPhotos(photos, { dir: ORIGINALS, manifest, download });
+  warnings.push(...result.warnings);
+  await prune(ORIGINALS, new Set(photos.map((p) => p.id)));
+  await writeFile(MANIFEST, JSON.stringify(result.manifest));
 
-  await writeFile('.cache/raw.json', JSON.stringify({ fetchedAt: new Date().toISOString(), sheets, folders }, null, 2));
-  console.log(`Opgehaald: ${folders.werken.length} bestanden in Werken, ${folders.tentoonstellingen.length} in Tentoonstellingen; ${downloaded} foto's gedownload.`);
+  await writeFile('.cache/raw.json', JSON.stringify({ fetchedAt: new Date().toISOString(), warnings, sheets, folders }, null, 2));
+  console.log(`Opgehaald: ${folders.werken.length} bestanden in Werken, ${folders.tentoonstellingen.length} in Tentoonstellingen; ${result.downloaded} foto's gedownload.`);
+  for (const warning of warnings) console.warn(`- ${warning}`);
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1]).href) {

@@ -93,7 +93,7 @@ test('problems become warnings, never crashes', () => {
   assert.equal(warnings.length, 4);
   assert.match(warnings[0], /"notities\.pdf" is geen foto/);
   assert.match(warnings[1], /rij 2: foto "weg\.jpg" niet gevonden/);
-  assert.match(warnings[2], /rij 4: "a\.jpg" staat al in een rij hierboven/);
+  assert.match(warnings[2], /rij 4: "a\.jpg" staat al in een andere rij/);
   assert.match(warnings[3], /rij 5: er is geen foto gekoppeld/);
 });
 
@@ -115,4 +115,31 @@ test('isImageFile accepts image mime types and known extensions such as HEIC', (
   assert.equal(isImageFile({ name: 'a.jpg', mimeType: 'image/jpeg' }), true);
   assert.equal(isImageFile({ name: 'IMG_1.HEIC', mimeType: 'application/octet-stream' }), true);
   assert.equal(isImageFile({ name: 'film.mov', mimeType: 'video/quicktime' }), false);
+});
+
+test('a Werken tab without Bestand and ID columns stops the build instead of publishing hidden works', () => {
+  const records = sheetToRecords([['Haven bij avond', 'fx-01'], ['Verborgen werk', 'fx-06']]);
+  assert.throws(() => buildWorks(records, [photo('fx-06', 'verborgen.jpg')], new Map([['fx-06', 'fx060000-0000-4000-8000-000000000000']])), /"Bestand" en "ID"/);
+});
+
+test('a missing Tonen column is reported', () => {
+  const records = sheetToRecords([['Bestand', 'ID'], ['a.jpg', 'd1']]);
+  const { warnings } = buildWorks(records, [photo('d1', 'a.jpg')], new Map([['d1', 'd1000000-0000-4000-8000-000000000000']]));
+  assert.match(warnings[0], /kolom "Tonen" ontbreekt/);
+});
+
+test('ID matches win over name matches, wherever the rows are (duplicate file names)', () => {
+  const { works, warnings } = run(
+    [{ Bestand: 'image0.jpeg', ID: 'weg', 'Titel NL': 'Oud', Tonen: false }, { Bestand: 'image0.jpeg', ID: 'd2', 'Titel NL': 'Juist' }],
+    [photo('d2', 'image0.jpeg', '2026-01-01T00:00:00Z'), photo('d3', 'image0.jpeg', '2026-02-01T00:00:00Z')],
+  );
+  const d2 = works.find((w) => w.image.driveId === 'd2');
+  assert.equal(d2?.title.nl, 'Juist');
+  assert.deepEqual(warnings, []);
+});
+
+test('isImageFile rejects Google Drive shortcuts and documents even when named like a photo', () => {
+  assert.equal(isImageFile({ name: 'IMG_1.jpg', mimeType: 'application/vnd.google-apps.shortcut' }), false);
+  assert.equal(isImageFile({ name: 'scan.jpg', mimeType: 'application/pdf' }), false);
+  assert.equal(isImageFile({ name: 'a.jpg' }), true);
 });

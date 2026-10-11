@@ -42,6 +42,12 @@ Een affiche of foto erbij? Zet die in de map **Tentoonstellingen** en typ de bes
 
 Een nieuwe alinea in een cel: **Ctrl + Enter** (Mac: **⌘ + Enter**), twee keer voor een lege regel.
 
+## Niet veranderen
+
+De namen van de tabbladen (Werken, Tentoonstellingen, Teksten), de kolomtitels en de mappen (Werken,
+Tentoonstellingen) laat je zoals ze zijn. Worden ze hernoemd, dan wordt de website niet meer bijgewerkt: de vorige
+versie blijft gewoon online tot het hersteld is.
+
 ## Iets verschijnt niet?
 
 - Wacht ±2 minuten en ververs de pagina.

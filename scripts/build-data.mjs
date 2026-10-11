@@ -35,7 +35,7 @@ const site = finalizeContent(content, metas);
 await mkdir('.cache', { recursive: true });
 await writeFile('.cache/content.json', JSON.stringify(site, null, 2));
 
-const warnings = [...content.warnings, ...imageWarnings];
+const warnings = [...(raw.warnings ?? []), ...content.warnings, ...imageWarnings];
 const banner = site.banner ? `, banner: "${site.banner.title.nl}"` : '';
 const summary = [
   `Gepubliceerd: ${site.works.length} werken, ${site.exhibitions.upcoming.length} komende en ${site.exhibitions.past.length} voorbije tentoonstellingen${banner}.`,
