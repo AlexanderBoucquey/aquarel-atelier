@@ -57,3 +57,14 @@ test('link accepts http(s) and www., rejects anything else', () => {
   assert.equal(link('gewoon tekst'), null);
   assert.equal(link(''), null);
 });
+
+test('date rejects numbers that are not plausible Sheets dates (typed year, phone number)', () => {
+  assert.deepEqual(date(2019), { value: null, error: true });
+  assert.deepEqual(date(32489919014), { value: null, error: true });
+  assert.deepEqual(date(1e9), { value: null, error: true });
+});
+
+test('sheetToRecords ignores symbols and underscores in headers', () => {
+  const [record] = sheetToRecords([['Tonen ☑', 'Titel_NL', ' ID '], [false, 'Haven', 'd1']]);
+  assert.deepEqual(record, { rowNumber: 2, tonen: false, 'titel nl': 'Haven', id: 'd1' });
+});

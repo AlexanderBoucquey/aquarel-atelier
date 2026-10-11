@@ -3,7 +3,7 @@
 /** Sheet rows (first row = headers) → records keyed by normalized header, plus rowNumber as shown in Sheets. */
 export function sheetToRecords(rows = []) {
   const [header = [], ...body] = rows;
-  const keys = header.map((h) => text(h).toLowerCase().replace(/\s+/g, ' '));
+  const keys = header.map((h) => text(h).toLowerCase().replace(/[^\p{L}\p{N}]+/gu, ' ').trim()); // 'Tonen ☑' → 'tonen'
   return body.map((cells, index) => {
     const record = { rowNumber: index + 2 };
     keys.forEach((key, i) => {
@@ -31,13 +31,16 @@ export function bool(value, fallback) {
 
 const SHEETS_EPOCH = Date.UTC(1899, 11, 30);
 const DAY = 86_400_000;
+const FIRST_SERIAL = 3000; // 1908-03-18; smaller numbers are typed years or counts, not dates
+const LAST_SERIAL = 109574; // 2199-12-31; larger numbers are e.g. a pasted phone number
 
 /**
  * Date cell → { value: 'YYYY-MM-DD' | null, error }. Accepts Sheets serial numbers, d/m/yyyy (also with - or .)
  * and yyyy-mm-dd. error = the cell has content that is not a valid date.
  */
 export function date(value) {
-  if (typeof value === 'number' && Number.isFinite(value)) {
+  if (typeof value === 'number') {
+    if (!(value >= FIRST_SERIAL && value <= LAST_SERIAL)) return { value: null, error: true };
     return { value: new Date(SHEETS_EPOCH + Math.floor(value) * DAY).toISOString().slice(0, 10), error: false };
   }
   const typed = text(value);
