@@ -1,0 +1,105 @@
+name: Build & deploy
+
+on:
+  workflow_dispatch: # also triggered by "Website publiceren" in the Sheet
+  push:
+    branches: [main]
+  schedule:
+    - cron: "17 2 * * *" # nightly fallback
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: build-and-deploy
+  cancel-in-progress: false
+
+env:
+  HAS_GOOGLE: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY != '' }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      deploy: ${{ steps.flag.outputs.deploy }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm test
+
+      - name: Sanity build with sample content
+        run: |
+          npm run data:fixtures
+          npm run build
+          npm run check-links
+
+      - id: flag
+        run: echo "deploy=$HAS_GOOGLE" >> "$GITHUB_OUTPUT"
+
+      - name: Install HEIC converter
+        if: env.HAS_GOOGLE == 'true'
+        run: sudo apt-get update && sudo apt-get install -y libheif-examples
+
+      - name: Restore photo cache
+        if: env.HAS_GOOGLE == 'true'
+        uses: actions/cache@v4
+        with:
+          path: |
+            .cache/originals
+            .cache/originals.json
+            .cache/images
+          key: photos-${{ github.run_id }}
+          restore-keys: photos-
+
+      - name: Fetch content from Google Drive
+        if: env.HAS_GOOGLE == 'true'
+        env:
+          GOOGLE_SERVICE_ACCOUNT_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
+        run: npm run fetch
+
+      - name: Prepare content and images
+        if: env.HAS_GOOGLE == 'true'
+        run: npm run data:google
+
+      - name: Save new work IDs
+        if: env.HAS_GOOGLE == 'true'
+        run: |
+          if [ -n "$(git status --porcelain -- content/ids.csv)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add content/ids.csv
+            git commit -m "content: register new works"
+            git pull --rebase
+            git push
+          fi
+
+      - name: Build site
+        if: env.HAS_GOOGLE == 'true'
+        run: |
+          rm -rf _site
+          npm run build
+          npm run check-links
+
+      - uses: actions/upload-pages-artifact@v3
+        if: env.HAS_GOOGLE == 'true'
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    if: needs.build.outputs.deploy == 'true'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
