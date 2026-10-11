@@ -94,7 +94,7 @@ skipped, rows without any date are listed after the dated ones in Sheet order.
 **Dirk's routine:** upload photo → (optionally fill in title etc.) → *Website publiceren*.
 
 **Identity (internal, in the repo):** `content/ids.csv` maps each photo's Drive file ID to our own UUID v4
-(`uuid,drive_id,file_name,first_seen`). The build appends a row whenever it meets a new Drive file ID and
+(`uuid,drive_id,first_seen`; no file names, because the repository is public). The build appends a row whenever it meets a new Drive file ID and
 commits the file back to `main`. Rows are never edited, deleted or reused. Dirk has no access to the repo, and
 Drive file IDs are assigned by Google and survive renaming, so nothing Dirk does in Drive or the Sheet can
 change a work's ID or URL. At worst a Sheet row gets detached from its photo: the photo then shows without

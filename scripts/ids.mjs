@@ -1,11 +1,12 @@
 // Registry of our own work IDs: one UUID v4 per Drive photo, stored in content/ids.csv. Append-only: entries are
-// never edited, deleted or reused, so a work's URL never changes.
+// never edited, deleted or reused, so a work's URL never changes. No file names: the repository is public, and
+// names of hidden works must not leak.
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { dirname } from 'node:path';
 import { randomUUID as cryptoRandomUUID } from 'node:crypto';
 import { parseCsv, stringifyCsv } from './lib/csv.mjs';
 
-const HEADER = ['uuid', 'drive_id', 'file_name', 'first_seen'];
+const HEADER = ['uuid', 'drive_id', 'first_seen'];
 
 /** The part of the UUID used in URLs: /werk/<shortId>/ */
 export function shortId(uuid) {
@@ -26,7 +27,7 @@ export function assignIds(entries, files, { today, randomUUID = cryptoRandomUUID
     while (shortIds.has(shortId(uuid))) uuid = randomUUID();
     known.add(file.id);
     shortIds.add(shortId(uuid));
-    added.push({ uuid, driveId: file.id, fileName: file.name, firstSeen: today });
+    added.push({ uuid, driveId: file.id, firstSeen: today });
   }
   return { entries: [...entries, ...added], added };
 }
@@ -43,10 +44,10 @@ export async function readRegistry(path) {
   const col = Object.fromEntries(header.map((name, i) => [name.trim(), i]));
   return rows
     .filter((r) => r[col.uuid] && r[col.drive_id])
-    .map((r) => ({ uuid: r[col.uuid], driveId: r[col.drive_id], fileName: r[col.file_name] ?? '', firstSeen: r[col.first_seen] ?? '' }));
+    .map((r) => ({ uuid: r[col.uuid], driveId: r[col.drive_id], firstSeen: r[col.first_seen] ?? '' }));
 }
 
 export async function writeRegistry(path, entries) {
   await mkdir(dirname(path), { recursive: true });
-  await writeFile(path, stringifyCsv([HEADER, ...entries.map((e) => [e.uuid, e.driveId, e.fileName, e.firstSeen])]));
+  await writeFile(path, stringifyCsv([HEADER, ...entries.map((e) => [e.uuid, e.driveId, e.firstSeen])]));
 }
