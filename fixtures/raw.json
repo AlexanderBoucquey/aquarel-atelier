@@ -1,0 +1,44 @@
+{
+  "fetchedAt": "sample",
+  "sheets": {
+    "werken": [
+      ["Bestand", "ID", "Titel NL", "Titel EN", "Techniek", "Jaar", "Afmetingen", "Beschrijving NL", "Beschrijving EN", "Tonen", "Uitgelicht"],
+      ["haven-avond.jpg", "fx-01", "Haven bij avond", "Harbour at dusk", "Aquarel", 2024, "36 x 48 cm", "Voorbeeldtekst: de haven in het laatste licht.", "Sample text: the harbour in the last light.", true, true],
+      ["berken.jpg", "fx-02", "Berken in maart", "", "Aquarel", 2025, "30 x 40 cm", "", "", true, true],
+      ["studie.jpg", "fx-03", "Studie", "Study", "Tekening", 2023, "", "", "", true, false],
+      ["duinen.jpg", "fx-04", "Duinen", "Dunes", "Olieverf", 2022, "50 x 100 cm", "", "", true, true],
+      ["zee-en-duinen.jpg", "fx-07", "Zee & duinen", "Sea & dunes", "Gemengde techniek", 2025, "", "", "", true, false],
+      ["verborgen.jpg", "fx-06", "Verborgen werk", "", "Aquarel", "", "", "", "", false, false],
+      ["weg.jpg", "", "Verdwenen werk", "", "", "", "", "", "", "", ""]
+    ],
+    "tentoonstellingen": [
+      ["Titel NL", "Titel EN", "Van", "Tot", "Plaats", "Adres", "Tekst NL", "Tekst EN", "Afbeelding", "Link", "Tonen", "Banner"],
+      ["Licht op water", "Light on water", 46458, 46467, "Galerie (voorbeeld)", "Voorbeeldstraat 1, 2930 Brasschaat", "Voorbeeldtekst: nieuwe aquarellen rond water en licht.", "Sample text: new watercolours about water and light.", "affiche-licht-op-water.jpg", "www.example.com", true, true],
+      ["Open atelier", "Open studio", "15/11/2026", "", "Atelier Dirk Vermoesen", "Veldstraat 258, 2930 Brasschaat", "Voorbeeldtekst: het atelier is open voor bezoekers.", "", "", "", true, false],
+      ["Zomersalon", "Summer salon", 45839, 45900, "Cultuurcentrum (voorbeeld)", "", "", "", "", "", true, true],
+      ["Atelier op afspraak", "Studio by appointment", "", "", "", "", "Voorbeeldtekst: het atelier is te bezoeken op afspraak.", "Sample text: the studio can be visited by appointment.", "", "", true, false],
+      ["Oude aankondiging", "", "01/01/2024", "", "", "", "", "", "", "", false, false],
+      ["", "", "", "", "", "", "", "", "", "", true, false]
+    ],
+    "teksten": [
+      ["Key", "NL", "EN"],
+      ["home_intro", "Voorbeeldtekst — Dirk past deze intro zelf aan in het tabblad Teksten.\n\nAquarellen, tekeningen en olieverfschilderijen uit het atelier in Brasschaat.", "Sample text — Dirk edits this introduction in the Teksten tab.\n\nWatercolours, drawings and oil paintings from the studio in Brasschaat."],
+      ["about", "Voorbeeldtekst — hier komt Dirks eigen verhaal, in te vullen in het tabblad Teksten.", "Sample text — Dirk's own story goes here, filled in via the Teksten tab."]
+    ]
+  },
+  "folders": {
+    "werken": [
+      { "id": "fx-01", "name": "haven-avond.jpg", "mimeType": "image/jpeg", "createdTime": "2026-02-01T10:00:00Z", "modifiedTime": "2026-02-01T10:00:00Z" },
+      { "id": "fx-02", "name": "berken.jpg", "mimeType": "image/jpeg", "createdTime": "2026-03-01T10:00:00Z", "modifiedTime": "2026-03-01T10:00:00Z" },
+      { "id": "fx-03", "name": "studie.jpg", "mimeType": "image/jpeg", "createdTime": "2026-01-15T10:00:00Z", "modifiedTime": "2026-01-15T10:00:00Z" },
+      { "id": "fx-04", "name": "duinen.jpg", "mimeType": "image/jpeg", "createdTime": "2025-11-01T10:00:00Z", "modifiedTime": "2025-11-01T10:00:00Z" },
+      { "id": "fx-05", "name": "IMG_0412.jpg", "mimeType": "image/jpeg", "createdTime": "2026-09-30T10:00:00Z", "modifiedTime": "2026-09-30T10:00:00Z" },
+      { "id": "fx-06", "name": "verborgen.jpg", "mimeType": "image/jpeg", "createdTime": "2026-04-01T10:00:00Z", "modifiedTime": "2026-04-01T10:00:00Z" },
+      { "id": "fx-07", "name": "zee-en-duinen.jpg", "mimeType": "image/jpeg", "createdTime": "2026-05-01T10:00:00Z", "modifiedTime": "2026-05-01T10:00:00Z" },
+      { "id": "fx-08", "name": "notities.pdf", "mimeType": "application/pdf", "createdTime": "2026-05-02T10:00:00Z", "modifiedTime": "2026-05-02T10:00:00Z" }
+    ],
+    "tentoonstellingen": [
+      { "id": "fx-e1", "name": "affiche-licht-op-water.jpg", "mimeType": "image/jpeg", "createdTime": "2026-09-01T10:00:00Z", "modifiedTime": "2026-09-01T10:00:00Z" }
+    ]
+  }
+}
