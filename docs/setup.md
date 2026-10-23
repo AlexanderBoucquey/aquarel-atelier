@@ -1,18 +1,19 @@
 # Setup — aquarel-atelier
 
-One-time setup to connect Dirk's Google Drive to the site. Allow ±1 hour, together with Dirk for step 1.
+One-time setup to connect the Google Drive folder to the site. Allow ±1 hour.
 
 ## Status and next steps
 
-Last updated 2026-10-11. Tick items off here as you go.
+Last updated 2026-10-22. Tick items off here as you go.
 
 - [x] Website built and tested (`npm test`), merged on `main` and pushed to GitHub.
 - [x] Commits use the GitHub noreply address; `content/ids.csv` holds no file names. Safe to make the repo public.
 - [x] The sample paintings in `fixtures/` are only for local preview and CI; they are never published.
 - [ ] Make the repository public: GitHub → repo *Settings → General → Danger Zone → Change visibility*. Optional: switch off *Issues*, *Wiki*, *Projects* under *Settings → General → Features*.
-- [ ] Step 1 — Google Drive + Sheet, together with Dirk.
+- [x] Step 1 — Google Drive + Sheet in Alexander's personal Google account; IDs in `site.config.json`.
+- [ ] Give Dirk access (step 1.5) once he maintains the site himself.
 - [ ] Step 2 — Google Cloud service account.
-- [ ] Step 3 — GitHub secret, Pages and `site.config.json`. First real version goes live at https://alexanderboucquey.github.io/aquarel-atelier/.
+- [ ] Step 3 — GitHub secret and Pages. First real version goes live at https://alexanderboucquey.github.io/aquarel-atelier/.
 - [ ] Step 4 — "Website publiceren" button (GitHub token in the Sheet).
 - [ ] Acceptance check (bottom of this page), then give Dirk `docs/handleiding-dirk.md`.
 - [ ] Step 5 — domain, once bought.
@@ -34,13 +35,22 @@ Last updated 2026-10-11. Tick items off here as you go.
   publish); Apps Script polish (trashed files, double click, minimal scopes, "unverified app" screen); accept a file
   name without extension or a Drive link in *Bestand*/*Afbeelding*; small display details on the home card.
 
-## 1. Google Drive + Sheet (Dirk's Google account)
+## 1. Google Drive + Sheet (Alexander's personal Google account)
 
-1. Dirk needs a free Google account; it can use his existing e-mail address (create it via accounts.google.com → *Use my current email address instead*).
-2. In Dirk's Drive, create the folder **Website Dirk Vermoesen** with two subfolders: **Werken** and **Tentoonstellingen**.
-3. In that folder, create a Google Sheet **Website inhoud**. *File → Settings → Locale: Belgium* (so 12/11/2026 means 12 November).
-4. Share the folder with Alexander as **Editor**.
-5. In the Sheet: *Extensions → Apps Script*. Replace the code with `apps-script/Code.gs`, save, choose `setupSheet` and click *Run* (accept the permissions). Reload the Sheet: the menu **Website** appears.
+Use the personal account, not the Harmoney one, in a browser window where only that account is signed in: with
+several accounts signed in, Apps Script often runs as the wrong one.
+
+1. Create the website folder **Website Dirk Vermoesen** (any location in Drive; the name is free) with two
+   subfolders: **Werken** and **Tentoonstellingen**. Photos go directly in **Werken**; subfolders are skipped.
+2. In that folder, create a Google Sheet **Website inhoud**. *File → Settings → Locale: Belgium* (so 12/11/2026 means 12 November).
+3. In the Sheet: *Extensions → Apps Script*. Replace the code with `apps-script/Code.gs` and save. In the function
+   dropdown next to *Run* choose `setupSheet` (it starts on `onOpen`, which only adds the menu) and click *Run*
+   (*Advanced → Go to … (unsafe) → Allow*). Reload the Sheet: the tabs and the menu **Website** appear.
+4. `site.config.json`: `google.folderId` is the website folder (from `…/folders/<id>`), not **Werken**;
+   `google.sheetId` is from `…/spreadsheets/d/<id>/edit`.
+5. When Dirk maintains the site himself: he needs a free Google account, which can use his existing e-mail address
+   (accounts.google.com → *Use my current email address instead*). Share the website folder with him as **Editor**;
+   its link is where he drops photos. Drive has no upload link that works without an account.
 
 ## 2. Google Cloud service account (read-only access for the build)
 
@@ -55,7 +65,7 @@ Last updated 2026-10-11. Tick items off here as you go.
 1. Repository `AlexanderBoucquey/aquarel-atelier` must be **public** (free Pages + Actions).
 2. *Settings → Secrets and variables → Actions → New repository secret*: `GOOGLE_SERVICE_ACCOUNT_KEY` = the full JSON file contents.
 3. *Settings → Pages → Build and deployment → Source*: **GitHub Actions**.
-4. In `site.config.json` fill in `google.folderId` (from the folder URL `…/folders/<id>`) and `google.sheetId` (from `…/spreadsheets/d/<id>/edit`). Commit and push to `main`: the workflow fetches, builds and deploys.
+4. With the IDs in `site.config.json` (step 1.4), run *Actions → Build & deploy → Run workflow*, or push to `main`: the workflow fetches, builds and deploys.
 
 ## 4. "Website publiceren" button
 
