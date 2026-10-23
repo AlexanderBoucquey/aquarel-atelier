@@ -117,6 +117,9 @@ main { padding-bottom: 64px; }
 @media (min-width: 800px) { .about { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); align-items: start; } }
 .about__portrait { width: 100%; max-width: 420px; }
 .about__text .page-title { margin-top: 0; }
+.about__atelier { grid-column: 1 / -1; display: grid; gap: 32px; margin-top: 16px; }
+@media (min-width: 600px) { .about__atelier { grid-template-columns: 1fr 1fr; } }
+.about__atelier img { width: 100%; }
 
 /* Contact */
 .lead { font-family: var(--serif); font-size: 1.3rem; line-height: 1.5; }

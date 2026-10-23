@@ -9,6 +9,11 @@ export default {
   routes,
   year: new Date().getFullYear(),
   portrait: { width: 750, height: 1000 },
+  // Atelier photos on the About page: src/assets/img/<name>-w600.webp and -w1200.webp (3:4).
+  atelier: [
+    { name: 'atelier-schilderen', alt: { nl: 'Dirk Vermoesen schildert een aquarel', en: 'Dirk Vermoesen painting a watercolour' } },
+    { name: 'atelier-wand', alt: { nl: 'Dirk Vermoesen in zijn atelier', en: 'Dirk Vermoesen in his studio' } },
+  ],
   contact: {
     street: 'Veldstraat 258',
     postal: '2930',

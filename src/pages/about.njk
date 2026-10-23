@@ -16,4 +16,9 @@ pageKey: about
     {{ atelier.texts.about[lang] | paragraphs | safe }}
     {%- endif %}
   </div>
+  <div class="about__atelier">
+    {%- for photo in site.atelier %}
+    <img src="/assets/img/{{ photo.name }}-w600.webp" srcset="/assets/img/{{ photo.name }}-w600.webp 600w, /assets/img/{{ photo.name }}-w1200.webp 1200w" sizes="(min-width: 1200px) 552px, (min-width: 600px) 50vw, 100vw" width="1200" height="1600" alt="{{ photo.alt[lang] }}" loading="lazy" decoding="async">
+    {%- endfor %}
+  </div>
 </div>

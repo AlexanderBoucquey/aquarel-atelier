@@ -90,3 +90,18 @@ test('stylesheet, script, fonts, favicon and portrait are published', () => {
     assert.ok(existsSync(join(out, file)), file);
   }
 });
+
+test('about page shows both atelier photos with alt text in each language', async () => {
+  const nl = await page('over/index.html');
+  const en = await page('en/about/index.html');
+  for (const [html, alts] of [
+    [nl, ['Dirk Vermoesen schildert een aquarel', 'Dirk Vermoesen in zijn atelier']],
+    [en, ['Dirk Vermoesen painting a watercolour', 'Dirk Vermoesen in his studio']],
+  ]) {
+    for (const alt of alts) assert.ok(html.includes(`alt="${alt}"`), alt);
+    assert.ok(html.includes(`srcset="${rel('/assets/img/atelier-schilderen-w600.webp')} 600w`));
+  }
+  for (const file of ['atelier-schilderen', 'atelier-wand'].flatMap((name) => [`${name}-w600.webp`, `${name}-w1200.webp`])) {
+    assert.ok(existsSync(join(out, 'assets/img', file)), file);
+  }
+});
