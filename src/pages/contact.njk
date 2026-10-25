@@ -9,17 +9,22 @@ pageKey: contact
 ---
 {%- set t = i18n[lang] -%}
 {%- set c = site.contact -%}
-<div class="wrap-narrow contact">
+<div class="wrap">
   <h1 class="page-title">{{ t.contact.heading }}</h1>
-  <p class="lead">{{ t.contact.intro }}</p>
-  <dl class="contact__list">
-    <dt>{{ t.contact.email }}</dt>
-    <dd><a href="mailto:{{ c.email }}">{{ c.email }}</a></dd>
-    <dt>{{ t.contact.phone }}</dt>
-    <dd><a href="{{ c.phoneHref }}">{{ c.phone }}</a></dd>
-    <dt>{{ t.contact.address }}</dt>
-    <dd>{{ c.street }}<br>{{ c.postal }} {{ c.city }}<br>{{ c.country[lang] }}<br><a href="{{ c.routeUrl }}" rel="noopener">{{ t.contact.route }}</a></dd>
-    <dt>{{ t.contact.follow }}</dt>
-    <dd><a href="{{ c.instagram.url }}" rel="me noopener">Instagram · {{ c.instagram.handle }}</a><br><a href="{{ c.facebook.url }}" rel="me noopener">Facebook · {{ c.facebook.handle }}</a></dd>
-  </dl>
+  <div class="contact">
+    <div class="contact__details">
+      <p class="lead">{{ t.contact.intro }}</p>
+      <dl class="contact__list">
+        <dt>{{ t.contact.email }}</dt>
+        <dd><a href="mailto:{{ c.email }}">{{ c.email }}</a></dd>
+        <dt>{{ t.contact.phone }}</dt>
+        <dd><a href="{{ c.phoneHref }}">{{ c.phone }}</a></dd>
+        <dt>{{ t.contact.address }}</dt>
+        <dd>{{ c.street }}<br>{{ c.postal }} {{ c.city }}<br>{{ c.country[lang] }}<br><a href="{{ c.routeUrl }}" rel="noopener">{{ t.contact.route }}</a></dd>
+        <dt>{{ t.contact.follow }}</dt>
+        <dd><a href="{{ c.instagram.url }}" rel="me noopener">Instagram · {{ c.instagram.handle }}</a><br><a href="{{ c.facebook.url }}" rel="me noopener">Facebook · {{ c.facebook.handle }}</a></dd>
+      </dl>
+    </div>
+    <iframe class="contact__map" src="{{ c.mapUrl }}" title="{{ t.contact.map }}" loading="lazy"></iframe>
+  </div>
 </div>

@@ -35,14 +35,14 @@ export function escapeHtml(value) {
   return String(value).replace(/[&<>"']/g, (c) => ESCAPES[c]);
 }
 
-/** Plain text from the Sheet → escaped HTML paragraphs (blank line = new paragraph, newline = <br>). */
+/** Plain text from the Sheet → escaped HTML paragraphs, one per line (empty lines are skipped). */
 export function paragraphs(value) {
   if (!value) return '';
   return String(value)
-    .split(/\n\s*\n/)
+    .split('\n')
     .map((p) => p.trim())
     .filter(Boolean)
-    .map((p) => `<p>${escapeHtml(p).replace(/\n/g, '<br>')}</p>`)
+    .map((p) => `<p>${escapeHtml(p)}</p>`)
     .join('\n');
 }
 

@@ -24,8 +24,8 @@ test('dateRange formats single days and ranges per language', () => {
   assert.equal(dateRange(null, null, 'nl'), '');
 });
 
-test('paragraphs escapes HTML and keeps line breaks', () => {
-  assert.equal(paragraphs('Zee & <duinen>\nregel 2\n\nTweede'), '<p>Zee &amp; &lt;duinen&gt;<br>regel 2</p>\n<p>Tweede</p>');
+test('paragraphs escapes HTML and makes every line a paragraph', () => {
+  assert.equal(paragraphs('Zee & <duinen>\nregel 2\n\nTweede'), '<p>Zee &amp; &lt;duinen&gt;</p>\n<p>regel 2</p>\n<p>Tweede</p>');
   assert.equal(paragraphs(''), '');
   assert.equal(paragraphs(undefined), '');
 });

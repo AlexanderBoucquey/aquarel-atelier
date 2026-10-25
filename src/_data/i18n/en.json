@@ -42,6 +42,7 @@
     "phone": "Phone",
     "address": "Address",
     "route": "Get directions",
+    "map": "Map showing the studio's location",
     "follow": "Follow"
   },
   "notFound": { "heading": "Page not found", "text": "This page does not exist (anymore).", "back": "Go to all work" }

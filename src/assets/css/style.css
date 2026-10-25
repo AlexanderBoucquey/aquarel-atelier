@@ -36,7 +36,8 @@ h3 { font-size: 1.4rem; }
 p { margin: 0 0 1em; }
 
 .wrap { max-width: 1200px; margin-inline: auto; padding-inline: var(--gutter); }
-.wrap-narrow { max-width: 720px; margin-inline: auto; padding-inline: var(--gutter); }
+/* Short lines for reading, starting on the same left edge as .wrap (and the wordmark) */
+.wrap-narrow { max-width: 720px; margin-left: max(0px, (100% - 1200px) / 2); padding-inline: var(--gutter); }
 .visually-hidden { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .skip-link { position: absolute; left: -9999px; }
 .skip-link:focus { left: var(--gutter); top: 8px; z-index: 10; padding: 8px 12px; background: var(--paper); }
@@ -70,9 +71,9 @@ main { padding-bottom: 64px; }
 
 /* Home */
 .hero { max-width: 1200px; margin: 8px auto 0; padding-inline: var(--gutter); }
-.hero__image img { width: auto; max-height: 78vh; margin-inline: auto; }
-.hero__caption { margin-top: 10px; color: var(--muted); font-size: 0.9rem; text-align: center; }
-.intro { margin-top: 40px; font-family: var(--serif); font-size: 1.35rem; line-height: 1.5; text-align: center; }
+.hero__image img { width: auto; max-height: 78vh; }
+.hero__caption { margin-top: 10px; color: var(--muted); font-size: 0.9rem; }
+.intro { margin-top: 40px; font-family: var(--serif); font-size: 1.35rem; line-height: 1.5; }
 .event-card { display: grid; gap: 16px; margin-top: 48px; padding-block: 20px; border-block: 1px solid var(--line); }
 .event-card img { max-width: 200px; } /* stays modest on phones too: calm, never pushy */
 .event-card h2 { margin-bottom: 0.2em; }
@@ -99,7 +100,7 @@ main { padding-bottom: 64px; }
 
 /* Work detail */
 .work__figure { margin: 8px auto 0; }
-.work__figure img { width: auto; max-height: 82vh; margin-inline: auto; }
+.work__figure img { width: auto; max-height: 82vh; }
 .work__text { margin-top: 28px; }
 .work__contact { margin-top: 28px; color: var(--muted); font-size: 0.95rem; }
 .pager { display: flex; justify-content: space-between; gap: 16px; margin-top: 40px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 0.95rem; }
@@ -113,15 +114,19 @@ main { padding-bottom: 64px; }
 .ex-group .section-title { margin-bottom: 8px; }
 
 /* About */
-.about { display: grid; gap: 32px; margin-top: 24px; }
+.about { display: grid; gap: 32px; }
 @media (min-width: 800px) { .about { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); align-items: start; } }
 .about__portrait { width: 100%; max-width: 420px; }
-.about__text .page-title { margin-top: 0; }
+.about__text > :first-child { text-box: trim-start cap alphabetic; } /* first line level with the portrait's top */
 .about__atelier { grid-column: 1 / -1; display: grid; gap: 32px; margin-top: 16px; }
 @media (min-width: 600px) { .about__atelier { grid-template-columns: 1fr 1fr; } }
 .about__atelier img { width: 100%; }
 
 /* Contact */
+.contact { display: grid; gap: 32px; }
+@media (min-width: 900px) { .contact { grid-template-columns: minmax(0, 656px) minmax(280px, 400px); justify-content: space-between; align-items: start; } }
+.contact__details > :first-child { text-box: trim-start cap alphabetic; } /* first line level with the map's top */
+.contact__map { display: block; width: 100%; aspect-ratio: 4 / 3; border: 1px solid var(--line); }
 .lead { font-family: var(--serif); font-size: 1.3rem; line-height: 1.5; }
 .contact__list { display: grid; gap: 4px 24px; margin: 32px 0 0; }
 .contact__list dt { margin-top: 16px; color: var(--muted); font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; }

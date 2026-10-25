@@ -42,6 +42,7 @@
     "phone": "Telefoon",
     "address": "Adres",
     "route": "Route plannen",
+    "map": "Kaart met de ligging van het atelier",
     "follow": "Volgen"
   },
   "notFound": { "heading": "Pagina niet gevonden", "text": "Deze pagina bestaat niet (meer).", "back": "Naar al het werk" }

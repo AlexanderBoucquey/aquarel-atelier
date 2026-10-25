@@ -91,6 +91,13 @@ test('stylesheet, script, fonts, favicon and portrait are published', () => {
   }
 });
 
+test('contact page shows the OpenStreetMap box with a title in each language', async () => {
+  const nl = await page('contact/index.html');
+  assert.ok(nl.includes('class="contact__map" src="https://www.openstreetmap.org/export/embed.html?'));
+  assert.ok(nl.includes('title="Kaart met de ligging van het atelier"'));
+  assert.ok((await page('en/contact/index.html')).includes('title="Map showing the studio'));
+});
+
 test('about page shows both atelier photos with alt text in each language', async () => {
   const nl = await page('over/index.html');
   const en = await page('en/about/index.html');

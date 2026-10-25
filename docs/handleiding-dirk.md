@@ -40,7 +40,7 @@ Een affiche of foto erbij? Zet die in de map **Tentoonstellingen** en typ de bes
 - **home_intro**: de tekst op de startpagina.
 - **about**: jouw verhaal op de pagina "Over Dirk".
 
-Een nieuwe alinea in een cel: **Ctrl + Enter** (Mac: **⌘ + Enter**), twee keer voor een lege regel.
+Een nieuwe alinea in een cel: **Ctrl + Enter** (Mac: **⌘ + Enter**). Elke nieuwe regel wordt een alinea.
 
 ## Niet veranderen
 
