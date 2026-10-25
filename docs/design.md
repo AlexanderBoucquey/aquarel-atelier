@@ -65,7 +65,8 @@ changing a field afterwards (e.g. hiding a work) = edit the cell → *Website pu
 Future sales columns (*Status*: te koop / verkocht, *Prijs*) can be added without restructuring.
 
 **Tab `Tentoonstellingen`** — Titel NL/EN · Van · Tot · Plaats · Adres · Tekst NL/EN · Afbeelding (optional,
-file name in `Tentoonstellingen/`) · Link · **Tonen ☑** · **Banner ☑**. Split automatically into *upcoming* and
+file name in `Tentoonstellingen/`) · Link (web address, or the file name of a PDF in `Tentoonstellingen/`, published
+as *Meer info (PDF)*) · **Tonen ☑** · **Banner ☑**. Split automatically into *upcoming* and
 *past* by date (Europe/Brussels). A news item is a row without *Tot*. All columns optional; fully empty rows are
 skipped, rows without any date are listed after the dated ones in Sheet order.
 

@@ -14,7 +14,7 @@
     "tentoonstellingen": [
       ["Titel NL", "Titel EN", "Van", "Tot", "Plaats", "Adres", "Tekst NL", "Tekst EN", "Afbeelding", "Link", "Tonen", "Banner"],
       ["Licht op water", "Light on water", 46458, 46467, "Galerie (voorbeeld)", "Voorbeeldstraat 1, 2930 Brasschaat", "Voorbeeldtekst: nieuwe aquarellen rond water en licht.", "Sample text: new watercolours about water and light.", "affiche-licht-op-water.jpg", "www.example.com", true, true],
-      ["Open atelier", "Open studio", "15/11/2026", "", "Atelier Dirk Vermoesen", "Veldstraat 258, 2930 Brasschaat", "Voorbeeldtekst: het atelier is open voor bezoekers.", "", "", "", true, false],
+      ["Open atelier", "Open studio", "15/11/2026", "", "Atelier Dirk Vermoesen", "Veldstraat 258, 2930 Brasschaat", "Voorbeeldtekst: het atelier is open voor bezoekers.", "", "", "uitnodiging-open-atelier.pdf", true, false],
       ["Zomersalon", "Summer salon", 45839, 45900, "Cultuurcentrum (voorbeeld)", "", "", "", "", "", true, true],
       ["Atelier op afspraak", "Studio by appointment", "", "", "", "", "Voorbeeldtekst: het atelier is te bezoeken op afspraak.", "Sample text: the studio can be visited by appointment.", "", "", true, false],
       ["Oude aankondiging", "", "01/01/2024", "", "", "", "", "", "", "", false, false],
@@ -38,7 +38,8 @@
       { "id": "fx-08", "name": "notities.pdf", "mimeType": "application/pdf", "createdTime": "2026-05-02T10:00:00Z", "modifiedTime": "2026-05-02T10:00:00Z" }
     ],
     "tentoonstellingen": [
-      { "id": "fx-e1", "name": "affiche-licht-op-water.jpg", "mimeType": "image/jpeg", "createdTime": "2026-09-01T10:00:00Z", "modifiedTime": "2026-09-01T10:00:00Z" }
+      { "id": "fx-e1", "name": "affiche-licht-op-water.jpg", "mimeType": "image/jpeg", "createdTime": "2026-09-01T10:00:00Z", "modifiedTime": "2026-09-01T10:00:00Z" },
+      { "id": "fx-e2", "name": "uitnodiging-open-atelier.pdf", "mimeType": "application/pdf", "createdTime": "2026-09-02T10:00:00Z", "modifiedTime": "2026-09-02T10:00:00Z" }
     ]
   }
 }

@@ -14,6 +14,7 @@ export default function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy({
     'src/assets': 'assets',
     '.cache/site-img': 'img',
+    '.cache/site-pdf': 'pdf',
     ...fonts('cormorant-garamond', 'cormorant-garamond', [500, 600]),
     ...fonts('source-sans-3', 'source-sans-3', [400, 600]),
   });

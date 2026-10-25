@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { buildExhibitions, todayInBrussels, hashKey } from '../scripts/lib/exhibitions.mjs';
+import { buildExhibitions, todayInBrussels, hashKey, isPdfFile } from '../scripts/lib/exhibitions.mjs';
 import { buildTexts } from '../scripts/lib/texts.mjs';
 import { sheetToRecords } from '../scripts/lib/cells.mjs';
 
@@ -81,6 +81,33 @@ test('bad dates skip the row with a warning; bad links and missing images only w
   assert.match(warnings[0], /rij 2: datum "volgende week" niet herkend/);
   assert.match(warnings[1], /rij 3: afbeelding "weg\.jpg" niet gevonden/);
   assert.match(warnings[2], /rij 3: link "javascript:alert\(1\)" is geen geldig webadres/);
+});
+
+test('Link may name a PDF in the Tentoonstellingen folder; web links ending in .pdf stay web links', () => {
+  const files = [{ id: 'pdf1', name: 'Uitnodiging.pdf', mimeType: 'application/pdf', modifiedTime: 't1' }];
+  const { upcoming, warnings } = run(
+    [
+      { 'Titel NL': 'Salon', Van: '12/11/2026', Link: 'uitnodiging.pdf' },
+      { 'Titel NL': 'Expo', Van: '13/11/2026', Link: 'https://aib.be/salon.pdf' },
+      { 'Titel NL': 'Open atelier', Van: '14/11/2026', Link: 'weg.pdf' },
+    ],
+    { files },
+  );
+  assert.deepEqual(upcoming[0].pdf, { driveId: 'pdf1', fileName: 'Uitnodiging.pdf', file: `${hashKey('pdf1')}.pdf` });
+  assert.equal(upcoming[0].link, null);
+  assert.equal(upcoming[1].pdf, null);
+  assert.equal(upcoming[1].link, 'https://aib.be/salon.pdf');
+  assert.equal(upcoming[2].pdf, null);
+  assert.equal(upcoming[2].link, null);
+  assert.equal(warnings.length, 1);
+  assert.match(warnings[0], /PDF "weg\.pdf" niet gevonden in de map Tentoonstellingen/);
+});
+
+test('isPdfFile: PDF type, or a .pdf name when Drive does not know the type', () => {
+  assert.equal(isPdfFile({ name: 'a.pdf', mimeType: 'application/pdf' }), true);
+  assert.equal(isPdfFile({ name: 'a.pdf', mimeType: 'application/octet-stream' }), true);
+  assert.equal(isPdfFile({ name: 'a.pdf', mimeType: 'application/vnd.google-apps.shortcut' }), false);
+  assert.equal(isPdfFile({ name: 'a.jpg', mimeType: 'image/jpeg' }), false);
 });
 
 test('todayInBrussels follows Brussels time around midnight, winter and summer', () => {

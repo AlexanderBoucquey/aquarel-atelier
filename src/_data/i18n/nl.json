@@ -31,7 +31,8 @@
     "past": "Eerder",
     "other": "Doorlopend",
     "noneUpcoming": "Er staan op dit moment geen tentoonstellingen gepland.",
-    "moreInfo": "Meer info"
+    "moreInfo": "Meer info",
+    "pdf": "Meer info (PDF)"
   },
   "banner": { "label": "Tentoonstelling", "more": "Meer info", "close": "Melding sluiten" },
   "about": { "heading": "Over Dirk", "portraitAlt": "Getekend zelfportret van Dirk Vermoesen" },

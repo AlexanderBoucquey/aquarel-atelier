@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { mkdtemp, writeFile, readFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { matchTabs, findFolder, structureProblems, downloadPhotos } from '../scripts/fetch.mjs';
+import { matchTabs, findFolder, structureProblems, downloadPhotos, downloadList } from '../scripts/fetch.mjs';
 
 test('matchTabs finds tabs regardless of case and spaces, null when missing', () => {
   assert.deepEqual(matchTabs(['werken ', 'TENTOONSTELLINGEN', 'Blad1']), { werken: 'werken ', tentoonstellingen: 'TENTOONSTELLINGEN', teksten: null });
@@ -31,6 +31,12 @@ test('structureProblems: a missing Werken tab or folder stops the build', () => 
   assert.equal(problems.length, 2);
   assert.match(problems[0], /Tabblad "Werken"/);
   assert.match(problems[1], /Map "Werken"/);
+});
+
+test('downloadList: photos from both folders, PDFs only from Tentoonstellingen', () => {
+  const werken = [{ id: 'w1', name: 'a.jpg', mimeType: 'image/jpeg' }, { id: 'w2', name: 'notities.pdf', mimeType: 'application/pdf' }];
+  const tentoonstellingen = [{ id: 't1', name: 'affiche.png', mimeType: 'image/png' }, { id: 't2', name: 'uitnodiging.pdf', mimeType: 'application/pdf' }, { id: 't3', name: 'tekst', mimeType: 'application/vnd.google-apps.document' }];
+  assert.deepEqual(downloadList({ werken, tentoonstellingen }).map((f) => f.id), ['w1', 't1', 't2']);
 });
 
 test('downloadPhotos downloads new or changed photos and skips files Google refuses (4xx) with a warning', async () => {

@@ -4,6 +4,14 @@ import { isImageFile } from './works.mjs';
 
 const CONTENT_COLUMNS = ['titel nl', 'titel en', 'van', 'tot', 'plaats', 'adres', 'tekst nl', 'tekst en', 'afbeelding', 'link'];
 
+/** Can this Drive file be published as a PDF (invitation, poster)? Same rule as isImageFile. */
+export function isPdfFile(file) {
+  const mimeType = file.mimeType ?? '';
+  if (mimeType === 'application/pdf') return true;
+  if (mimeType && mimeType !== 'application/octet-stream') return false;
+  return /\.pdf$/i.test(file.name ?? '');
+}
+
 /** Short stable hash: exhibition anchors, banner dismissal and exhibition image folders. */
 export function hashKey(...parts) {
   return createHash('sha1').update(parts.join('\u0000')).digest('hex').slice(0, 10);
@@ -20,11 +28,16 @@ export function todayInBrussels(now = new Date()) {
  */
 export function buildExhibitions(records, files, today) {
   const warnings = [];
-  const imagesByName = new Map();
-  for (const f of files.filter(isImageFile)) {
-    const name = f.name.trim().toLowerCase();
-    if (!imagesByName.has(name)) imagesByName.set(name, f);
-  }
+  const byName = (isKind) => {
+    const map = new Map();
+    for (const f of files.filter(isKind)) {
+      const name = f.name.trim().toLowerCase();
+      if (!map.has(name)) map.set(name, f);
+    }
+    return map;
+  };
+  const imagesByName = byName(isImageFile);
+  const pdfsByName = byName(isPdfFile);
 
   const items = [];
   for (const row of records) {
@@ -40,9 +53,13 @@ export function buildExhibitions(records, files, today) {
     const imageName = text(row.afbeelding);
     const image = imageName ? imagesByName.get(imageName.toLowerCase()) : undefined;
     if (imageName && !image) warnings.push(`${where}: afbeelding "${imageName}" niet gevonden in de map Tentoonstellingen.`);
+    // Link holds a web address, or the name of a PDF in the Tentoonstellingen folder.
     const typedLink = text(row.link);
-    const url = link(typedLink);
-    if (typedLink && !url) warnings.push(`${where}: link "${typedLink}" is geen geldig webadres.`);
+    const pdf = pdfsByName.get(typedLink.toLowerCase());
+    const pdfName = !pdf && /\.pdf$/i.test(typedLink) && !/^(https?:\/\/|www\.)/i.test(typedLink);
+    const url = pdf || pdfName ? null : link(typedLink);
+    if (pdfName) warnings.push(`${where}: PDF "${typedLink}" niet gevonden in de map Tentoonstellingen.`);
+    else if (typedLink && !pdf && !url) warnings.push(`${where}: link "${typedLink}" is geen geldig webadres.`);
 
     const titleNl = text(row['titel nl']);
     const textNl = text(row['tekst nl']);
@@ -56,6 +73,7 @@ export function buildExhibitions(records, files, today) {
       place: text(row.plaats),
       address: text(row.adres),
       link: url,
+      pdf: pdf ? { driveId: pdf.id, fileName: pdf.name, file: `${hashKey(pdf.id)}.pdf` } : null,
       image: image ? { driveId: image.id, fileName: image.name, version: image.modifiedTime ?? '', dir: `e/${hashKey(image.id)}` } : null,
       banner: bool(row.banner, false),
     });

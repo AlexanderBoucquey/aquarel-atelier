@@ -7,6 +7,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import Eleventy from '@11ty/eleventy';
+import { hashKey } from '../scripts/lib/exhibitions.mjs';
 
 const config = JSON.parse(readFileSync('site.config.json', 'utf8'));
 const prefix = config.pathPrefix.replace(/\/$/, '');
@@ -89,6 +90,13 @@ test('stylesheet, script, fonts, favicon and portrait are published', () => {
   for (const file of ['assets/css/style.css', 'assets/js/site.js', 'assets/favicon.svg', 'assets/img/portrait.webp', 'assets/fonts/cormorant-garamond-600.woff2', 'assets/fonts/source-sans-3-400.woff2']) {
     assert.ok(existsSync(join(out, file)), file);
   }
+});
+
+test('an exhibition links to its PDF from the Tentoonstellingen folder, published under a hashed name', async () => {
+  const file = `pdf/${hashKey('fx-e2')}.pdf`;
+  assert.ok((await page('tentoonstellingen/index.html')).includes(`href="${rel(`/${file}`)}">Meer info (PDF)</a>`));
+  assert.ok((await page('en/exhibitions/index.html')).includes('>More info (PDF)</a>'));
+  assert.ok(existsSync(join(out, file)));
 });
 
 test('contact page shows the OpenStreetMap box with a title in each language', async () => {

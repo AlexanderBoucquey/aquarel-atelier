@@ -31,7 +31,8 @@
     "past": "Earlier",
     "other": "Ongoing",
     "noneUpcoming": "No exhibitions are planned at the moment.",
-    "moreInfo": "More info"
+    "moreInfo": "More info",
+    "pdf": "More info (PDF)"
   },
   "banner": { "label": "Exhibition", "more": "More info", "close": "Close announcement" },
   "about": { "heading": "About Dirk", "portraitAlt": "Drawn self-portrait of Dirk Vermoesen" },

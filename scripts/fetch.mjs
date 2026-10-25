@@ -9,6 +9,7 @@ import { pathToFileURL } from 'node:url';
 import { GoogleAuth } from 'google-auth-library';
 import { originalName, prune } from './images.mjs';
 import { isImageFile } from './lib/works.mjs';
+import { isPdfFile } from './lib/exhibitions.mjs';
 
 const TABS = { werken: 'Werken', tentoonstellingen: 'Tentoonstellingen', teksten: 'Teksten' };
 const FOLDERS = { werken: 'Werken', tentoonstellingen: 'Tentoonstellingen' };
@@ -37,6 +38,11 @@ export function structureProblems(tabs, children) {
   if (!tabs.werken) problems.push('Tabblad "Werken" niet gevonden in de Sheet (hernoemd of verwijderd?).');
   if (!findFolder(children, FOLDERS.werken)) problems.push('Map "Werken" niet gevonden in de websitemap (hernoemd of verwijderd?).');
   return problems;
+}
+
+/** Drive files to download: photos from both folders, plus the PDFs that exhibitions can link to. */
+export function downloadList(folders) {
+  return [...folders.werken.filter(isImageFile), ...folders.tentoonstellingen.filter((f) => isImageFile(f) || isPdfFile(f))];
 }
 
 /**
@@ -138,13 +144,13 @@ async function main() {
     sheets[key] = data.valueRanges[i].values ?? [];
   });
 
-  // Photos: download new or changed originals only
+  // Photos and PDFs: download new or changed originals only
   await mkdir(ORIGINALS, { recursive: true });
   let manifest = {};
   try {
     manifest = JSON.parse(await readFile(MANIFEST, 'utf8'));
   } catch {}
-  const photos = [...folders.werken, ...folders.tentoonstellingen].filter(isImageFile);
+  const photos = downloadList(folders);
   const download = async (photo, target) => {
     const response = await request(`https://www.googleapis.com/drive/v3/files/${photo.id}?alt=media&supportsAllDrives=true`);
     await pipeline(Readable.fromWeb(response.body), createWriteStream(target));

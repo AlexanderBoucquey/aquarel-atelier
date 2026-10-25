@@ -30,7 +30,10 @@ optioneel) en kies opnieuw **Website publiceren**.
 
 Vul een nieuwe rij in: titel, **Van** en **Tot** (bv. 12/11/2026), plaats, adres, tekst en eventueel een link.
 Een affiche of foto erbij? Zet die in de map **Tentoonstellingen** en typ de bestandsnaam in de kolom
-**Afbeelding**.
+**Afbeelding** (een foto: JPG, PNG…).
+
+Een uitnodiging of affiche als PDF? Zet die ook in de map **Tentoonstellingen** en typ de bestandsnaam (bv.
+`uitnodiging.pdf`) in de kolom **Link**. Op de website verschijnt dan "Meer info (PDF)".
 
 - **Banner** aanvinken: een rustige melding bovenaan de website en een blokje op de startpagina. Die verdwijnt vanzelf na de einddatum.
 - **Tonen** uitvinken: de tentoonstelling helemaal verbergen.

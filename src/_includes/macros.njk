@@ -24,7 +24,9 @@
     <p class="ex__place">{{ e.place }}{% if e.place and e.address %}<br>{% endif %}{{ e.address }}</p>
     {%- endif %}
     {{ e.text[lang] | paragraphs | safe }}
-    {%- if e.link %}
+    {%- if e.pdf %}
+    <p><a href="/pdf/{{ e.pdf.file }}">{{ t.exhibitions.pdf }}</a></p>
+    {%- elif e.link %}
     <p><a href="{{ e.link }}" rel="noopener">{{ t.exhibitions.moreInfo }}</a></p>
     {%- endif %}
   </div>
