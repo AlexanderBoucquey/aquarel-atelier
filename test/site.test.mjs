@@ -5,6 +5,7 @@ import { execFileSync } from 'node:child_process';
 import { mkdtemp, readFile } from 'node:fs/promises';
 import { existsSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
+import { createHash } from 'node:crypto';
 import { join } from 'node:path';
 import Eleventy from '@11ty/eleventy';
 import { hashKey } from '../scripts/lib/exhibitions.mjs';
@@ -166,4 +167,12 @@ test('work detail: details as a list with linked subject and the award, per lang
   assert.ok(en.includes('<dt>Award</dt><dd>Audience award, Summer Salon 2025</dd>'));
   assert.ok(en.includes('<dt>Technique</dt><dd>Watercolour</dd>'));
   assert.ok(!(await page('werk/2b3c4d5e/index.html')).includes('<dt>Bekroning</dt>'));
+});
+
+test('stylesheet and script addresses change with their content, so a browser never mixes a new page with an old stylesheet', async () => {
+  const html = await page('index.html');
+  for (const file of ['assets/css/style.css', 'assets/js/site.js']) {
+    const version = createHash('sha256').update(readFileSync(join('src', file))).digest('hex').slice(0, 10);
+    assert.ok(html.includes(`"${rel(`/${file}`)}?v=${version}"`), file);
+  }
 });
