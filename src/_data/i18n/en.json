@@ -13,10 +13,15 @@
     "contact": { "title": "Contact — Dirk Vermoesen", "description": "Contact details of Dirk Vermoesen, Veldstraat 258, 2930 Brasschaat, Belgium." },
     "notFound": { "title": "Page not found — Dirk Vermoesen", "description": "This page does not exist (anymore)." }
   },
-  "home": { "more": "More work", "allWork": "See all work" },
+  "home": { "bySubject": "Work by subject", "work": "work", "works": "works", "allWork": "See all work" },
   "work": {
     "heading": "Work",
     "filterLabel": "Filter by technique",
+    "filterSubject": "Filter by subject",
+    "subjectLabel": "Subject",
+    "techniqueLabel": "Technique",
+    "noMatch": "No works match this choice.",
+    "facts": { "technique": "Technique", "subject": "Subject", "year": "Year", "size": "Dimensions", "award": "Award" },
     "filterAll": "All",
     "prev": "Previous",
     "next": "Next",

@@ -17,6 +17,11 @@ const KNOWN_TECHNIQUES = [
   { key: 'aquarel', label: { nl: 'Aquarel', en: 'Watercolour' }, aliases: ['aquarel', 'watercolour', 'watercolor', 'waterverf'] },
   { key: 'tekening', label: { nl: 'Tekening', en: 'Drawing' }, aliases: ['tekening', 'drawing'] },
   { key: 'olieverf', label: { nl: 'Olieverf', en: 'Oil painting' }, aliases: ['olieverf', 'olie', 'oil', 'oil painting', 'oilpainting'] },
+  {
+    key: 'acrylinkt-houtskool',
+    label: { nl: 'Acrylinkt en houtskool', en: 'Acrylic ink and charcoal' },
+    aliases: ['acrylinkt en houtskool', 'acrylinkt & houtskool', 'acrylinkt, houtskool', 'acrylic ink and charcoal'],
+  },
 ];
 
 export const TECHNIQUE_ORDER = KNOWN_TECHNIQUES.map((t) => t.key);
@@ -30,13 +35,31 @@ export function technique(value) {
   return { key: slugify(typed), label: { nl: typed, en: typed } };
 }
 
+const KNOWN_SUBJECTS = [
+  { key: 'portret', label: { nl: 'Portret', en: 'Portrait' }, plural: { nl: 'Portretten', en: 'Portraits' }, aliases: ['portret', 'portretten', 'portrait', 'portraits'] },
+  { key: 'landschap', label: { nl: 'Landschap', en: 'Landscape' }, plural: { nl: 'Landschappen', en: 'Landscapes' }, aliases: ['landschap', 'landschappen', 'landscape', 'landscapes'] },
+  { key: 'dier', label: { nl: 'Dier', en: 'Animal' }, plural: { nl: 'Dieren', en: 'Animals' }, aliases: ['dier', 'dieren', 'animal', 'animals'] },
+];
+
+export const SUBJECT_ORDER = KNOWN_SUBJECTS.map((s) => s.key);
+
+/** Onderwerp cell → { key, label, plural } (each { nl, en }) or null. Unknown subjects are kept as typed, everywhere. */
+export function subject(value) {
+  const typed = text(value);
+  if (!typed) return null;
+  const known = KNOWN_SUBJECTS.find((s) => s.aliases.includes(typed.toLowerCase()));
+  if (known) return { key: known.key, label: known.label, plural: known.plural };
+  const asTyped = { nl: typed, en: typed };
+  return { key: slugify(typed), label: asTyped, plural: asTyped };
+}
+
 function slugify(value) {
   const slug = value.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
   return slug || 'overig';
 }
 
 const UNTITLED = { nl: 'Werk van Dirk Vermoesen', en: 'Work by Dirk Vermoesen' };
-const TEXT_COLUMNS = ['titel nl', 'titel en', 'techniek', 'jaar', 'afmetingen', 'beschrijving nl', 'beschrijving en'];
+const TEXT_COLUMNS = ['titel nl', 'titel en', 'techniek', 'jaar', 'afmetingen', 'beschrijving nl', 'beschrijving en', 'onderwerp', 'bekroning nl', 'bekroning en'];
 
 /**
  * Join the photos in Werken/ with the rows of the Werken tab. Every column is optional: a photo without a row is
@@ -116,6 +139,7 @@ function toWork(file, row, uuidByDriveId) {
   const year = text(row.jaar);
   const size = text(row.afmetingen);
   const descriptionNl = text(row['beschrijving nl']);
+  const awardNl = text(row['bekroning nl']);
   const meta = (lang) => [tech?.label[lang], year, size].filter(Boolean).join(' · ');
   const alt = (lang) => [title[lang] || UNTITLED[lang], tech?.label[lang], year].filter(Boolean).join(', ');
   return {
@@ -123,6 +147,8 @@ function toWork(file, row, uuidByDriveId) {
     uuid,
     title,
     technique: tech,
+    subject: subject(row.onderwerp),
+    award: { nl: awardNl, en: text(row['bekroning en']) || awardNl },
     year,
     size,
     description: { nl: descriptionNl, en: text(row['beschrijving en']) || descriptionNl },

@@ -9,14 +9,18 @@ pageKey: home
 ---
 {%- import "macros.njk" as m -%}
 {%- set t = i18n[lang] -%}
-{%- set hero = atelier.hero -%}
-{%- if hero %}
-<section class="hero">
-  <a class="hero__image" href="{{ 'work' | pageUrl(lang, hero.id) }}">{{ m.artImage(hero.image, hero.alt[lang], '(min-width: 1200px) 1136px, 100vw', 'eager', 1600) }}</a>
-  {%- if hero.title[lang] %}
-  <p class="hero__caption">{{ hero.title[lang] }}{% if hero.meta[lang] %} · {{ hero.meta[lang] }}{% endif %}</p>
-  {%- endif %}
+{#- Where there is a choice (data-pick), each candidate sits in a <template> and the script at the bottom shows one at
+    random per visit; without JavaScript the <noscript> copy of the first candidate shows. -#}
+{%- set heroes = atelier.heroes -%}
+{%- if heroes.length > 1 %}
+<section class="hero" data-pick>
+  <noscript>{{ m.heroFigure(heroes[0], lang) }}</noscript>
+  {%- for w in heroes %}
+  <template data-work="{{ w.id }}">{{ m.heroFigure(w, lang) }}</template>
+  {%- endfor %}
 </section>
+{%- elif heroes.length %}
+<section class="hero" data-shown="{{ heroes[0].id }}">{{ m.heroFigure(heroes[0], lang) }}</section>
 {%- else %}
 <p class="wrap empty">{{ t.work.empty }}</p>
 {%- endif %}
@@ -41,10 +45,46 @@ pageKey: home
   </section>
 </div>
 {%- endif %}
-{%- if atelier.homeWorks.length %}
+{%- if atelier.works.length %}
 <section class="wrap">
-  <h2 class="section-title">{{ t.home.more }}</h2>
-  <ul class="tiles">{% for w in atelier.homeWorks %}{{ m.workTile(w, lang) }}{% endfor %}</ul>
+  {%- if atelier.subjects.length %}
+  <h2 class="visually-hidden">{{ t.home.bySubject }}</h2>
+  <ul class="subjects">
+    {%- for s in atelier.subjects %}
+    {%- set first = s.picks[0] %}
+    {%- if s.picks.length > 1 %}
+    <li class="subject" style="--ar: {{ m.aspect(first) }}" data-pick>
+      <noscript>{{ m.subjectCard(first, s, lang, t) }}</noscript>
+      {%- for w in s.picks %}
+      <template data-work="{{ w.id }}" data-ar="{{ m.aspect(w) }}">{{ m.subjectCard(w, s, lang, t) }}</template>
+      {%- endfor %}
+    </li>
+    {%- else %}
+    <li class="subject" style="--ar: {{ m.aspect(first) }}" data-shown="{{ first.id }}">{{ m.subjectCard(first, s, lang, t) }}</li>
+    {%- endif %}
+    {%- endfor %}
+  </ul>
+  {%- endif %}
   <p class="more"><a href="{{ 'work' | pageUrl(lang) }}">{{ t.home.allWork }} →</a></p>
 </section>
 {%- endif %}
+<script>
+  // Runs while the page loads, so the chosen works appear at once. A work already on the page is not picked twice.
+  (function () {
+    var used = {};
+    document.querySelectorAll('[data-shown]').forEach(function (el) {
+      used[el.dataset.shown] = true;
+    });
+    document.querySelectorAll('[data-pick]').forEach(function (box) {
+      var all = Array.prototype.slice.call(box.querySelectorAll('template'));
+      var fresh = all.filter(function (tpl) {
+        return !used[tpl.dataset.work];
+      });
+      var pool = fresh.length ? fresh : all;
+      var chosen = pool[Math.floor(Math.random() * pool.length)];
+      used[chosen.dataset.work] = true;
+      if (chosen.dataset.ar) box.style.setProperty('--ar', chosen.dataset.ar);
+      box.replaceChildren(chosen.content.cloneNode(true));
+    });
+  })();
+</script>

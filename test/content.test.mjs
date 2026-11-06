@@ -12,11 +12,11 @@ function raw() {
   return {
     sheets: {
       werken: [
-        ['Bestand', 'ID', 'Titel NL', 'Techniek', 'Tonen', 'Uitgelicht'],
-        ['', 'd1', 'Haven', 'Aquarel', true, true],
-        ['', 'd2', 'Verborgen', 'Olieverf', false, false],
-        ['', 'd3', 'Duinen', 'Gemengde techniek', true, false],
-        ['', 'd4', 'Bos', 'Tekening', true, false],
+        ['Bestand', 'ID', 'Titel NL', 'Techniek', 'Tonen', 'Uitgelicht', 'Onderwerp'],
+        ['', 'd1', 'Haven', 'Aquarel', true, true, 'Landschap'],
+        ['', 'd2', 'Verborgen', 'Olieverf', false, false, 'Portret'],
+        ['', 'd3', 'Duinen', 'Gemengde techniek', true, false, 'landschappen'],
+        ['', 'd4', 'Bos', 'Tekening', true, false, 'Stadsgezicht'],
       ],
       tentoonstellingen: [['Titel NL', 'Van', 'Afbeelding', 'Banner'], ['Licht op water', '12/11/2026', 'affiche.jpg', true]],
       teksten: [['Key', 'NL', 'EN'], ['about', 'Over mij', '']],
@@ -36,7 +36,8 @@ test('empty or missing tabs and folders give empty content, not a crash', () => 
   assert.deepEqual(content.texts, {});
   const site = finalizeContent(content, new Map());
   assert.equal(site.hero, null);
-  assert.deepEqual(site.homeWorks, []);
+  assert.deepEqual(site.heroes, []);
+  assert.deepEqual(site.subjects, []);
   assert.deepEqual(site.techniques, []);
 });
 
@@ -57,10 +58,35 @@ test('finalizeContent fills image sizes and drops works whose image failed', () 
   assert.deepEqual(site.texts, { about: { nl: 'Over mij', en: 'Over mij' } });
 });
 
-test('hero is the first featured work; home shows the other featured works, or else the latest works', () => {
+test('heroes are all featured works (the page picks one per visit), or else the first work', () => {
   const site = finalizeContent(buildContent(raw(), registry, '2026-10-11'), metasFor('d1', 'd3', 'd4'));
+  assert.deepEqual(site.heroes.map((w) => w.title.nl), ['Haven']);
   assert.equal(site.hero.title.nl, 'Haven');
-  assert.deepEqual(site.homeWorks.map((w) => w.title.nl), ['Duinen', 'Bos']);
+  const none = raw();
+  for (const r of none.sheets.werken.slice(1)) r[5] = false;
+  assert.deepEqual(finalizeContent(buildContent(none, registry, '2026-10-11'), metasFor('d1', 'd3', 'd4')).heroes.map((w) => w.title.nl), ['Haven']);
+});
+
+test('subjects: known ones first in fixed order, then new ones; picks are the featured works, else the first works', () => {
+  const site = finalizeContent(buildContent(raw(), registry, '2026-10-11'), metasFor('d1', 'd3', 'd4'));
+  assert.deepEqual(
+    site.subjects.map((s) => [s.key, s.plural.nl, s.count, s.picks.map((w) => w.title.nl)]),
+    [
+      ['landschap', 'Landschappen', 2, ['Haven']],
+      ['stadsgezicht', 'Stadsgezicht', 1, ['Bos']],
+    ],
+  );
+});
+
+test('subjects: at most 12 picks when none of a subject is featured', () => {
+  const many = raw();
+  const header = many.sheets.werken[0];
+  many.sheets.werken = [header, ...Array.from({ length: 14 }, (_, i) => ['', `p${i}`, `Portret ${i}`, '', true, false, 'Portret'])];
+  many.folders.werken = many.sheets.werken.slice(1).map((r) => photo(r[1], `${r[1]}.jpg`));
+  const ids = many.folders.werken.map((f) => ({ uuid: `${f.id.padEnd(8, 'a')}-0000-4000-8000-000000000000`, driveId: f.id }));
+  const site = finalizeContent(buildContent(many, ids, '2026-10-11'), metasFor(...many.folders.werken.map((f) => f.id)));
+  assert.equal(site.subjects[0].count, 14);
+  assert.deepEqual(site.subjects[0].picks.map((w) => w.title.nl), Array.from({ length: 12 }, (_, i) => `Portret ${i}`));
 });
 
 test('techniques: only those of published works, known ones first in fixed order', () => {

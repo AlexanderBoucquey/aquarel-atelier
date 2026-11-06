@@ -12,12 +12,19 @@ eleventyComputed:
 {%- import "macros.njk" as m -%}
 {%- set t = i18n[lang] -%}
 {%- set w = wp.work -%}
-<article class="work">
-  <figure class="work__figure wrap">{{ m.artImage(w.image, w.alt[lang], '(min-width: 1200px) 1136px, 100vw', 'eager', 1600) }}</figure>
-  <div class="work__text wrap-narrow">
+{%- set f = t.work.facts -%}
+<article class="work wrap">
+  <figure class="work__figure">{{ m.artImage(w.image, w.alt[lang], '(min-width: 1200px) 680px, (min-width: 900px) 60vw, 100vw', 'eager', 1600) }}</figure>
+  <div class="work__text">
     <h1{% if not w.title[lang] %} class="visually-hidden"{% endif %}>{{ w.title[lang] or w.alt[lang] }}</h1>
-    {%- if w.meta[lang] %}
-    <p class="meta">{{ w.meta[lang] }}</p>
+    {%- if w.technique or w.subject or w.year or w.size or w.award[lang] %}
+    <dl class="facts">
+      {%- if w.technique %}<dt>{{ f.technique }}</dt><dd>{{ w.technique.label[lang] }}</dd>{% endif %}
+      {%- if w.subject %}<dt>{{ f.subject }}</dt><dd><a href="{{ 'work' | pageUrl(lang) }}?onderwerp={{ w.subject.key }}">{{ w.subject.label[lang] }}</a></dd>{% endif %}
+      {%- if w.year %}<dt>{{ f.year }}</dt><dd>{{ w.year }}</dd>{% endif %}
+      {%- if w.size %}<dt>{{ f.size }}</dt><dd>{{ w.size }}</dd>{% endif %}
+      {%- if w.award[lang] %}<dt>{{ f.award }}</dt><dd>{{ w.award[lang] }}</dd>{% endif %}
+    </dl>
     {%- endif %}
     {{ w.description[lang] | paragraphs | safe }}
     <p class="work__contact"><a href="{{ 'contact' | pageUrl(lang) }}">{{ t.work.question }}</a></p>

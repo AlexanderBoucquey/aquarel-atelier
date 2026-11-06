@@ -11,16 +11,35 @@ pageKey: work
 {%- set t = i18n[lang] -%}
 <div class="wrap">
   <h1 class="page-title">{{ t.work.heading }}</h1>
-  {%- if atelier.techniques.length > 1 %}
-  <div class="filters" data-filters role="group" aria-label="{{ t.work.filterLabel }}" hidden>
-    <button type="button" data-filter="" aria-pressed="true">{{ t.work.filterAll }}</button>
-    {%- for tech in atelier.techniques %}
-    <button type="button" data-filter="{{ tech.key }}" aria-pressed="false">{{ tech.label[lang] }}</button>
-    {%- endfor %}
+  {#- A filter only shows when it can narrow the list: two or more values, or one value that not every work has. -#}
+  {%- set subjects = atelier.subjects -%}
+  {%- set bySubject = subjects.length > 1 or (subjects.length == 1 and subjects[0].count < atelier.works.length) -%}
+  {%- set byTechnique = atelier.techniques.length > 1 -%}
+  {%- if bySubject or byTechnique %}
+  <div class="filters" data-filters hidden>
+    {%- if bySubject %}
+    <div class="filters__group" role="group" aria-label="{{ t.work.filterSubject }}" data-group="onderwerp">
+      <span class="filters__label" aria-hidden="true">{{ t.work.subjectLabel }}</span>
+      <button type="button" data-filter="" aria-pressed="true">{{ t.work.filterAll }}</button>
+      {%- for s in subjects %}
+      <button type="button" data-filter="{{ s.key }}" aria-pressed="false">{{ s.plural[lang] }}</button>
+      {%- endfor %}
+    </div>
+    {%- endif %}
+    {%- if byTechnique %}
+    <div class="filters__group" role="group" aria-label="{{ t.work.filterLabel }}" data-group="techniek">
+      <span class="filters__label" aria-hidden="true">{{ t.work.techniqueLabel }}</span>
+      <button type="button" data-filter="" aria-pressed="true">{{ t.work.filterAll }}</button>
+      {%- for tech in atelier.techniques %}
+      <button type="button" data-filter="{{ tech.key }}" aria-pressed="false">{{ tech.label[lang] }}</button>
+      {%- endfor %}
+    </div>
+    {%- endif %}
   </div>
   {%- endif %}
   {%- if atelier.works.length %}
   <ul class="tiles" data-tiles>{% for w in atelier.works %}{{ m.workTile(w, lang) }}{% endfor %}</ul>
+  <p class="empty" data-no-match hidden>{{ t.work.noMatch }}</p>
   {%- else %}
   <p class="empty">{{ t.work.empty }}</p>
   {%- endif %}

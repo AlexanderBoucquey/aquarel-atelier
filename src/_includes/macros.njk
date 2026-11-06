@@ -2,8 +2,26 @@
 <img src="{{ image | imgSrc(preferred) }}" srcset="{{ image | srcset }}" sizes="{{ sizes }}" width="{{ image.width }}" height="{{ image.height }}" alt="{{ alt }}" loading="{{ loading }}" decoding="async">
 {%- endmacro %}
 
+{% macro aspect(work) %}{{ (work.image.width / work.image.height) | round(3) }}{% endmacro %}
+
+{% macro heroFigure(work, lang) -%}
+<a class="hero__image" href="{{ 'work' | pageUrl(lang, work.id) }}">{{ artImage(work.image, work.alt[lang], '(min-width: 1200px) 1136px, 100vw', 'eager', 1600) }}</a>
+{%- if work.title[lang] %}
+<p class="hero__caption">{{ work.title[lang] }}{% if work.meta[lang] %} · {{ work.meta[lang] }}{% endif %}</p>
+{%- endif %}
+{%- endmacro %}
+
+{# A subject on the home page: one of its works, the subject's name and how many works it has. #}
+{% macro subjectCard(work, s, lang, t) -%}
+<a href="{{ 'work' | pageUrl(lang) }}?onderwerp={{ s.key }}">
+  {{ artImage(work.image, work.alt[lang], work.image | tileSizes) }}
+  <span class="subject__name">{{ s.plural[lang] }}</span>
+  <span class="subject__count">{{ s.count }} {{ t.home.work if s.count == 1 else t.home.works }}</span>
+</a>
+{%- endmacro %}
+
 {% macro workTile(work, lang) -%}
-<li class="tile" style="--ar: {{ (work.image.width / work.image.height) | round(3) }}" data-technique="{{ work.technique.key if work.technique else '' }}">
+<li class="tile" style="--ar: {{ aspect(work) }}" data-subject="{{ work.subject.key if work.subject else '' }}" data-technique="{{ work.technique.key if work.technique else '' }}">
   <a href="{{ 'work' | pageUrl(lang, work.id) }}">{{ artImage(work.image, work.alt[lang], work.image | tileSizes) }}</a>
 </li>
 {%- endmacro %}

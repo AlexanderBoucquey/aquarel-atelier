@@ -53,11 +53,13 @@ build's service account; not public):
 | Bestand | Link to the photo in Drive (filled in by the script); a manually added row may hold the file name instead |
 | ID | Drive file ID, hidden column (filled in by the script). Rows are matched on ID, so renaming the file is safe; without ID, matched on file name |
 | Titel NL / Titel EN | |
-| Techniek | Dropdown: Aquarel · Tekening · Olieverf |
+| Techniek | Dropdown: Aquarel · Tekening · Olieverf · Acrylinkt en houtskool (typing another value is allowed) |
 | Jaar · Afmetingen | Free text, e.g. `2024` · `30 x 40 cm` |
 | Beschrijving NL / EN | Optional |
 | Tonen ☑ | Untick to hide a work without deleting it (ticked by default) |
-| Uitgelicht ☑ | Shown on the homepage |
+| Uitgelicht ☑ | Candidate for the homepage: the hero, and the card of its subject |
+| Onderwerp | Dropdown: Portret · Landschap · Dier; any other typed value becomes a new subject |
+| Bekroning NL / EN | Optional award, e.g. a public prize at a salon; EN falls back to NL |
 
 **Every column is optional, including the title.** A photo in `Werken/` is published unless its row has *Tonen*
 unticked; a photo without any row is published too (image only). Dirk and Alexander both edit this Sheet:
@@ -110,9 +112,9 @@ language.
 
 | Page | NL | EN | Content |
 |---|---|---|---|
-| Home | `/` | `/en/` | Featured work as hero, intro text, event card (only when an event has *Banner* ☑), *Uitgelicht* works |
-| Gallery | `/werk/` | `/en/work/` | Grid of all published works, filter by technique |
-| Work detail | `/werk/<id>/` | `/en/work/<id>/` | Large image, title, technique, year, size, description, prev/next, "Interesse? Neem contact op" |
+| Home | `/` | `/en/` | Hero picked at random per visit among the *Uitgelicht* works, intro text, event card (only when an event has *Banner* ☑), one card per subject (one of its *Uitgelicht* works at random, else one of its works) linking to the filtered gallery |
+| Gallery | `/werk/` | `/en/work/` | Grid of all published works, combinable filters by subject and technique, kept in the URL (`?onderwerp=portret`) |
+| Work detail | `/werk/<id>/` | `/en/work/<id>/` | Large image with the details beside it on wide screens: title, technique, subject, year, size, award, description, prev/next, "Interesse? Neem contact op" |
 | Exhibitions | `/tentoonstellingen/` | `/en/exhibitions/` | Upcoming first, then past |
 | About | `/over/` | `/en/about/` | Bio (`Teksten.about`) + portrait |
 | Contact | `/contact/` | `/en/contact/` | Address, `tel:` and `mailto:` links, Facebook, Instagram, "Route" link to Google Maps |

@@ -2,11 +2,11 @@
   "fetchedAt": "sample",
   "sheets": {
     "werken": [
-      ["Bestand", "ID", "Titel NL", "Titel EN", "Techniek", "Jaar", "Afmetingen", "Beschrijving NL", "Beschrijving EN", "Tonen", "Uitgelicht"],
-      ["haven-avond.jpg", "fx-01", "Haven bij avond", "Harbour at dusk", "Aquarel", 2024, "36 x 48 cm", "Voorbeeldtekst: de haven in het laatste licht.", "Sample text: the harbour in the last light.", true, true],
-      ["berken.jpg", "fx-02", "Berken in maart", "", "Aquarel", 2025, "30 x 40 cm", "", "", true, true],
-      ["studie.jpg", "fx-03", "Studie", "Study", "Tekening", 2023, "", "", "", true, false],
-      ["duinen.jpg", "fx-04", "Duinen", "Dunes", "Olieverf", 2022, "50 x 100 cm", "", "", true, true],
+      ["Bestand", "ID", "Titel NL", "Titel EN", "Techniek", "Jaar", "Afmetingen", "Beschrijving NL", "Beschrijving EN", "Tonen", "Uitgelicht", "Onderwerp", "Bekroning NL", "Bekroning EN"],
+      ["haven-avond.jpg", "fx-01", "Haven bij avond", "Harbour at dusk", "Aquarel", 2024, "36 x 48 cm", "Voorbeeldtekst: de haven in het laatste licht.", "Sample text: the harbour in the last light.", true, true, "Landschap", "Publieksprijs, Zomersalon 2025", "Audience award, Summer Salon 2025"],
+      ["berken.jpg", "fx-02", "Berken in maart", "", "Aquarel", 2025, "30 x 40 cm", "", "", true, true, "Landschap", "", ""],
+      ["studie.jpg", "fx-03", "Studie", "Study", "Tekening", 2023, "", "", "", true, false, "Portret", "", ""],
+      ["duinen.jpg", "fx-04", "Duinen", "Dunes", "Olieverf", 2022, "50 x 100 cm", "", "", true, true, "landschappen", "", ""],
       ["zee-en-duinen.jpg", "fx-07", "Zee & duinen", "Sea & dunes", "Gemengde techniek", 2025, "", "", "", true, false],
       ["verborgen.jpg", "fx-06", "Verborgen werk", "", "Aquarel", "", "", "", "", false, false],
       ["weg.jpg", "", "Verdwenen werk", "", "", "", "", "", "", "", ""]

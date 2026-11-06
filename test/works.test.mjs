@@ -1,9 +1,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { buildWorks, technique, isImageFile } from '../scripts/lib/works.mjs';
+import { buildWorks, technique, subject, isImageFile } from '../scripts/lib/works.mjs';
 import { sheetToRecords } from '../scripts/lib/cells.mjs';
 
-const HEADER = ['Bestand', 'ID', 'Titel NL', 'Titel EN', 'Techniek', 'Jaar', 'Afmetingen', 'Beschrijving NL', 'Beschrijving EN', 'Tonen', 'Uitgelicht'];
+const HEADER = ['Bestand', 'ID', 'Titel NL', 'Titel EN', 'Techniek', 'Jaar', 'Afmetingen', 'Beschrijving NL', 'Beschrijving EN', 'Tonen', 'Uitgelicht', 'Onderwerp', 'Bekroning NL', 'Bekroning EN'];
 const row = (values) => HEADER.map((h) => values[h] ?? '');
 const photo = (id, name, createdTime = '2026-01-01T00:00:00Z') => ({ id, name, mimeType: 'image/jpeg', createdTime, modifiedTime: '2026-01-02T00:00:00Z' });
 
@@ -142,4 +142,35 @@ test('isImageFile rejects Google Drive shortcuts and documents even when named l
   assert.equal(isImageFile({ name: 'IMG_1.jpg', mimeType: 'application/vnd.google-apps.shortcut' }), false);
   assert.equal(isImageFile({ name: 'scan.jpg', mimeType: 'application/pdf' }), false);
   assert.equal(isImageFile({ name: 'a.jpg' }), true);
+});
+
+test('technique: acrylic ink and charcoal is a known technique with an English label', () => {
+  assert.deepEqual(technique('Acrylinkt en houtskool'), { key: 'acrylinkt-houtskool', label: { nl: 'Acrylinkt en houtskool', en: 'Acrylic ink and charcoal' } });
+});
+
+test('subject: known names, singular or plural, in either language; unknown kept as typed', () => {
+  assert.deepEqual(subject('Portret'), { key: 'portret', label: { nl: 'Portret', en: 'Portrait' }, plural: { nl: 'Portretten', en: 'Portraits' } });
+  assert.equal(subject(' landschappen ').key, 'landschap');
+  assert.equal(subject('ANIMALS').plural.nl, 'Dieren');
+  assert.deepEqual(subject('Stadsgezicht'), { key: 'stadsgezicht', label: { nl: 'Stadsgezicht', en: 'Stadsgezicht' }, plural: { nl: 'Stadsgezicht', en: 'Stadsgezicht' } });
+  assert.equal(subject(''), null);
+});
+
+test('a work carries its subject and award; the English award falls back to Dutch', () => {
+  const { works } = run(
+    [
+      { ID: 'd1', Onderwerp: 'Portret', 'Bekroning NL': 'Publieksprijs, Aquarelsalon 2026' },
+      { ID: 'd2', 'Bekroning NL': 'Eerste prijs', 'Bekroning EN': 'First prize' },
+    ],
+    [photo('d1', 'a.jpg'), photo('d2', 'b.jpg')],
+  );
+  assert.equal(works[0].subject.key, 'portret');
+  assert.deepEqual(works[0].award, { nl: 'Publieksprijs, Aquarelsalon 2026', en: 'Publieksprijs, Aquarelsalon 2026' });
+  assert.equal(works[1].subject, null);
+  assert.deepEqual(works[1].award, { nl: 'Eerste prijs', en: 'First prize' });
+});
+
+test('a row with only a subject or award but no photo is reported', () => {
+  const { warnings } = run([{ Onderwerp: 'Dier' }], [photo('d1', 'a.jpg')]);
+  assert.match(warnings[0], /rij 2: er is geen foto gekoppeld/);
 });

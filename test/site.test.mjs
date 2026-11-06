@@ -120,3 +120,50 @@ test('about page shows both atelier photos with alt text in each language', asyn
     assert.ok(existsSync(join(out, 'assets/img', file)), file);
   }
 });
+
+const between = (html, start, end) => html.slice(html.indexOf(start), html.indexOf(end, html.indexOf(start)));
+
+test('home: every featured work is a hero candidate; without JavaScript the first one shows', async () => {
+  const nl = await page('index.html');
+  const hero = between(nl, 'class="hero"', '</section>');
+  assert.equal(hero.match(/<template data-work=/g)?.length, 3);
+  for (const id of ['1a2b3c4d', '2b3c4d5e', '4d5e6f7a']) assert.ok(hero.includes(`<template data-work="${id}">`), id);
+  assert.ok(between(hero, '<noscript>', '</noscript>').includes(`href="${rel('/werk/1a2b3c4d/')}"`));
+  assert.ok(nl.includes('data-pick'));
+});
+
+test('home: one card per subject linking to the filtered work page, with a count', async () => {
+  const nl = await page('index.html');
+  assert.ok(!nl.includes('Meer werk'));
+  const subjects = between(nl, 'class="subjects"', '</section>');
+  assert.ok(subjects.indexOf('Portretten') < subjects.indexOf('Landschappen'), 'known subjects in fixed order');
+  assert.ok(subjects.includes(`href="${rel('/werk/?onderwerp=landschap')}"`));
+  assert.ok(subjects.includes('3 werken'));
+  assert.ok(subjects.includes('1 werk<'));
+  assert.equal(between(subjects, 'Portretten', 'Landschappen').match(/<template data-work=/g), null, 'one portrait: no choice, no template');
+  assert.equal(between(subjects, 'Landschappen', 'Bekijk').match(/<template data-work=/g)?.length, 3, 'three featured landscapes to choose from');
+  const en = await page('en/index.html');
+  assert.ok(en.includes(`href="${rel('/en/work/?onderwerp=landschap')}"`));
+  assert.ok(en.includes('Landscapes') && en.includes('3 works'));
+});
+
+test('work page: filter by subject and by technique; tiles carry both', async () => {
+  const html = await page('werk/index.html');
+  const subjects = between(html, 'data-group="onderwerp"', '</div>');
+  assert.ok(subjects.includes('data-filter="landschap"') && subjects.includes('>Landschappen</button>'));
+  assert.ok(subjects.includes('data-filter="portret"'));
+  assert.ok(between(html, 'data-group="techniek"', '</div>').includes('data-filter="olieverf"'));
+  assert.ok(html.includes('data-subject="landschap" data-technique="aquarel"'));
+  assert.ok((await page('en/work/index.html')).includes('>Landscapes</button>'));
+});
+
+test('work detail: details as a list with linked subject and the award, per language', async () => {
+  const nl = await page('werk/1a2b3c4d/index.html');
+  assert.ok(nl.includes(`<dt>Onderwerp</dt><dd><a href="${rel('/werk/?onderwerp=landschap')}">Landschap</a></dd>`));
+  assert.ok(nl.includes('<dt>Bekroning</dt><dd>Publieksprijs, Zomersalon 2025</dd>'));
+  assert.ok(nl.includes('<dt>Afmetingen</dt><dd>36 x 48 cm</dd>'));
+  const en = await page('en/work/1a2b3c4d/index.html');
+  assert.ok(en.includes('<dt>Award</dt><dd>Audience award, Summer Salon 2025</dd>'));
+  assert.ok(en.includes('<dt>Technique</dt><dd>Watercolour</dd>'));
+  assert.ok(!(await page('werk/2b3c4d5e/index.html')).includes('<dt>Bekroning</dt>'));
+});

@@ -4,10 +4,11 @@
  */
 var REPO = 'AlexanderBoucquey/aquarel-atelier';
 var WORKFLOW = 'build.yml';
-var TECHNIQUES = ['Aquarel', 'Tekening', 'Olieverf'];
+var TECHNIQUES = ['Aquarel', 'Tekening', 'Olieverf', 'Acrylinkt en houtskool'];
+var SUBJECTS = ['Portret', 'Landschap', 'Dier'];
 var IMAGE_EXTENSIONS = /\.(jpe?g|png|webp|heic|heif|tiff?|avif|gif)$/i;
 var HEADERS = {
-  Werken: ['Bestand', 'ID', 'Titel NL', 'Titel EN', 'Techniek', 'Jaar', 'Afmetingen', 'Beschrijving NL', 'Beschrijving EN', 'Tonen', 'Uitgelicht'],
+  Werken: ['Bestand', 'ID', 'Titel NL', 'Titel EN', 'Techniek', 'Jaar', 'Afmetingen', 'Beschrijving NL', 'Beschrijving EN', 'Tonen', 'Uitgelicht', 'Onderwerp', 'Bekroning NL', 'Bekroning EN'],
   Tentoonstellingen: ['Titel NL', 'Titel EN', 'Van', 'Tot', 'Plaats', 'Adres', 'Tekst NL', 'Tekst EN', 'Afbeelding', 'Link', 'Tonen', 'Banner'],
   Teksten: ['Key', 'NL', 'EN'],
 };
@@ -95,7 +96,8 @@ function isImage_(file) {
 
 /**
  * Adds a row at the top of "Werken" for every photo in the Werken folder that has no row yet. Only the Bestand or ID
- * column is required; other columns are filled in when present.
+ * column is required; other columns are filled in when present. Also keeps the Techniek and Onderwerp dropdowns on
+ * every row.
  */
 function addNewPhotoRows_() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -135,7 +137,10 @@ function addNewPhotoRows_() {
     var f = files.next();
     if (isImage_(f) && !knownIds[f.getId()] && !knownNames[f.getName().trim().toLowerCase()]) fresh.push(f);
   }
-  if (fresh.length === 0) return 0;
+  if (fresh.length === 0) {
+    setDropdowns_(sheet, col);
+    return 0;
+  }
   fresh.sort(function (a, b) {
     return b.getDateCreated() - a.getDateCreated();
   });
@@ -148,12 +153,24 @@ function addNewPhotoRows_() {
   });
   if (col('tonen')) sheet.getRange(2, col('tonen'), fresh.length, 1).insertCheckboxes().check();
   if (col('uitgelicht')) sheet.getRange(2, col('uitgelicht'), fresh.length, 1).insertCheckboxes().uncheck();
-  if (col('techniek')) sheet.getRange(2, col('techniek'), fresh.length, 1).setDataValidation(techniqueRule_());
+  setDropdowns_(sheet, col);
   return fresh.length;
+}
+
+/** Dropdowns on the whole Techniek and Onderwerp columns, so a new choice shows on every row. Typing anything else stays allowed. */
+function setDropdowns_(sheet, col) {
+  var rows = sheet.getMaxRows() - 1;
+  if (rows < 1) return;
+  if (col('techniek')) sheet.getRange(2, col('techniek'), rows, 1).setDataValidation(techniqueRule_());
+  if (col('onderwerp')) sheet.getRange(2, col('onderwerp'), rows, 1).setDataValidation(subjectRule_());
 }
 
 function techniqueRule_() {
   return SpreadsheetApp.newDataValidation().requireValueInList(TECHNIQUES, true).setAllowInvalid(true).build();
+}
+
+function subjectRule_() {
+  return SpreadsheetApp.newDataValidation().requireValueInList(SUBJECTS, true).setAllowInvalid(true).build();
 }
 
 /** Run once from the Apps Script editor: creates the three tabs with their columns. Existing tabs are left alone. */
@@ -168,6 +185,7 @@ function setupSheet() {
     if (name === 'Werken') {
       sheet.hideColumns(headers.indexOf('ID') + 1);
       sheet.getRange(2, headers.indexOf('Techniek') + 1, 999, 1).setDataValidation(techniqueRule_());
+      sheet.getRange(2, headers.indexOf('Onderwerp') + 1, 999, 1).setDataValidation(subjectRule_());
     }
     if (name === 'Tentoonstellingen') {
       sheet.getRange(2, headers.indexOf('Tonen') + 1, 200, 1).insertCheckboxes().check();
