@@ -43,7 +43,8 @@ export function finalizeContent(content, metas) {
     return meta ? { ...image, width: meta.width, height: meta.height, widths: meta.widths } : null;
   };
   const withImage = (e) => e && { ...e, image: fill(e.image) };
-  // Awarded works first (stable sort: everything else keeps the sheet order).
+  // Awarded works first, so they lead the gallery and every filtered view they belong to (stable sort: everything
+  // else keeps the sheet order).
   const works = content.works
     .map((w) => ({ ...w, image: fill(w.image) }))
     .filter((w) => w.image)

@@ -39,8 +39,7 @@
     var apply = function () {
       var shown = 0;
       tiles.querySelectorAll('.tile').forEach(function (tile) {
-        // Awarded works stay on top whatever the filter.
-        var match = tile.hasAttribute('data-award') || Object.keys(chosen).every(function (name) {
+        var match = Object.keys(chosen).every(function (name) {
           return chosen[name] === '' || tile.dataset[TILE_KEY[name]] === chosen[name];
         });
         tile.hidden = !match;
