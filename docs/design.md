@@ -57,7 +57,7 @@ build's service account; not public):
 | Jaar · Afmetingen | Free text, e.g. `2024` · `30 x 40 cm` |
 | Beschrijving NL / EN | Optional |
 | Tonen ☑ | Untick to hide a work without deleting it (ticked by default) |
-| Uitgelicht ☑ | Candidate for the homepage: the hero, and the card of its subject |
+| Uitgelicht ☑ | Candidate for the homepage card of its subject; the first one is also the link-preview image |
 | Onderwerp | Dropdown: Portret · Landschap · Dier; any other typed value becomes a new subject |
 | Bekroning NL / EN | Optional award, e.g. a public prize at a salon; EN falls back to NL |
 
@@ -112,7 +112,7 @@ language.
 
 | Page | NL | EN | Content |
 |---|---|---|---|
-| Home | `/` | `/en/` | Hero picked at random per visit among the *Uitgelicht* works, intro text, event card (only when an event has *Banner* ☑), one card per subject (one of its *Uitgelicht* works at random, else one of its works) linking to the filtered gallery |
+| Home | `/` | `/en/` | Intro text, event card (only when an event has *Banner* ☑), one card per subject (one of its *Uitgelicht* works at random, else one of its works) linking to the filtered gallery |
 | Gallery | `/werk/` | `/en/work/` | Grid of all published works, combinable filters by subject and technique, kept in the URL (`?onderwerp=portret`) |
 | Work detail | `/werk/<id>/` | `/en/work/<id>/` | Large image with the details beside it on wide screens: title, technique, subject, year, size, award, description, prev/next, "Interesse? Neem contact op" |
 | Exhibitions | `/tentoonstellingen/` | `/en/exhibitions/` | Upcoming first, then past |
@@ -140,7 +140,7 @@ Decisions:
   "Tentoonstelling *Licht op water* · 12–20 nov · Brasschaat → meer info". Page colours, no bright accent, no
   animation, no countdown. A small **×** closes it; the browser remembers that per event (localStorage, keyed
   by a hash of title + date; if storage is unavailable the strip simply shows again).
-- **Homepage card:** below the hero and intro, styled like the rest of the content, with the event image if set.
+- **Homepage card:** below the intro, styled like the rest of the content, with the event image if set.
   Never replaces or covers the artwork.
 - **At most one event** is announced: the soonest upcoming one with *Banner* ☑.
 - **Auto-off:** the build leaves out events past their end date, and a few lines of page JS hide the strip and

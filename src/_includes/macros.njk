@@ -4,13 +4,6 @@
 
 {% macro aspect(work) %}{{ (work.image.width / work.image.height) | round(3) }}{% endmacro %}
 
-{% macro heroFigure(work, lang) -%}
-<a class="hero__image" href="{{ 'work' | pageUrl(lang, work.id) }}">{{ artImage(work.image, work.alt[lang], '(min-width: 1200px) 1136px, 100vw', 'eager', 1600) }}</a>
-{%- if work.title[lang] %}
-<p class="hero__caption">{{ work.title[lang] }}{% if work.meta[lang] %} · {{ work.meta[lang] }}{% endif %}</p>
-{%- endif %}
-{%- endmacro %}
-
 {# A subject on the home page: one of its works, the subject's name and how many works it has. #}
 {% macro subjectCard(work, s, lang, t) -%}
 <a href="{{ 'work' | pageUrl(lang) }}?onderwerp={{ s.key }}">

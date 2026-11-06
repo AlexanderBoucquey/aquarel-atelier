@@ -34,8 +34,8 @@ export function imageList(content) {
 
 /**
  * Attach processed image sizes. Works whose image failed are dropped (processAll already warned); exhibitions just
- * lose their image. Adds for the templates: heroes (the home page shows one of them per visit; hero is the first, for
- * visitors without JavaScript and for link previews), subjects with their home page picks, and techniques.
+ * lose their image. Adds for the templates: hero (the first featured work, the image for link previews), subjects with
+ * their home page picks, and techniques.
  */
 export function finalizeContent(content, metas) {
   const fill = (image) => {
@@ -50,11 +50,9 @@ export function finalizeContent(content, metas) {
     .filter((w) => w.image)
     .sort((a, b) => Number(Boolean(b.award?.nl)) - Number(Boolean(a.award?.nl)));
   const featured = works.filter((w) => w.featured);
-  const heroes = featured.length ? featured : works.slice(0, 1);
   return {
     works,
-    hero: heroes[0] ?? null,
-    heroes,
+    hero: featured[0] ?? works[0] ?? null,
     subjects: subjectsOf(works),
     techniques: techniquesOf(works),
     exhibitions: {

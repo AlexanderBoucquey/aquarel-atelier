@@ -70,9 +70,6 @@ main { padding-bottom: 64px; }
 .eyebrow { margin-bottom: 0.4em; color: var(--muted); font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; }
 
 /* Home */
-.hero { max-width: 1200px; margin: 8px auto 0; padding-inline: var(--gutter); }
-.hero__image img { width: auto; max-height: 78vh; }
-.hero__caption { margin-top: 10px; color: var(--muted); font-size: 0.9rem; }
 .intro { margin-top: 40px; font-family: var(--serif); font-size: 1.35rem; line-height: 1.5; }
 .event-card { display: grid; gap: 16px; margin-top: 48px; padding-block: 20px; border-block: 1px solid var(--line); }
 .event-card img { max-width: 200px; } /* stays modest on phones too: calm, never pushy */
@@ -84,7 +81,8 @@ main { padding-bottom: 64px; }
 .more { margin-top: 20px; text-align: right; }
 
 /* Home: one work per subject, in one justified row like the tiles (never cropped), with name and count below */
-.subjects { display: flex; flex-wrap: wrap; gap: 24px 16px; margin: 56px 0 0; padding: 0; list-style: none; }
+.subjects { display: flex; flex-wrap: wrap; gap: 24px 16px; margin: 8px 0 0; padding: 0; list-style: none; }
+:is(.intro, .event-card, .wrap-narrow) ~ .wrap .subjects { margin-top: 56px; }
 .subject { flex: var(--ar) 1 calc(var(--ar) * var(--row-h)); max-width: calc(var(--ar) * var(--row-h) * 1.6); }
 .subject a { display: block; text-decoration: none; }
 .subject img { width: 100%; background: var(--paper-2); transition: opacity 0.2s; }

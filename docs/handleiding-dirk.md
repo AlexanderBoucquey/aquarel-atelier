@@ -22,7 +22,7 @@ optioneel) en kies opnieuw **Website publiceren**.
 | Jaar, Afmetingen | Bv. 2024 en 30 x 40 cm |
 | Beschrijving NL / EN | Wat uitleg bij het werk |
 | Tonen | Uitvinken = het werk is niet meer te zien op de website |
-| Uitgelicht | Aanvinken = het werk kan op de startpagina komen (zie hieronder) |
+| Uitgelicht | Aanvinken = het werk kan op de startpagina komen als voorbeeld van zijn onderwerp (zie hieronder) |
 | Bekroning NL / EN | Een prijs die het werk won, bv. Publieksprijs, 41ste Aquarelsalon AIB, Schoten 2026 |
 
 - **Volgorde**: de website toont de werken in de volgorde van de rijen. Sleep een rij (aan het rijnummer links) naar boven of beneden.
@@ -30,10 +30,8 @@ optioneel) en kies opnieuw **Website publiceren**.
 
 ### De startpagina
 
-- **Bovenaan** staat één groot werk. Bij elk bezoek kiest de website een ander werk uit alle werken met **Uitgelicht**
-  aangevinkt. Vink dus gerust werken van verschillende onderwerpen en stijlen aan.
-- **Daaronder** staat per onderwerp (Portretten, Landschappen, Dieren…) één werk, ook dat wisselt bij elk bezoek tussen
-  de uitgelichte werken van dat onderwerp. Is er van een onderwerp niets uitgelicht, dan kiest de website uit al zijn
+- Per onderwerp (Portretten, Landschappen, Dieren…) staat er één werk. Dat wisselt bij elk bezoek tussen de werken van
+  dat onderwerp met **Uitgelicht** aangevinkt. Vink dus gerust per onderwerp een paar mooie werken aan. Is er van een onderwerp niets uitgelicht, dan kiest de website uit al zijn
   werken. Wie erop klikt, ziet alle werken van dat onderwerp.
 - Een werk zonder onderwerp staat gewoon bij **Werk**, niet op de startpagina.
 

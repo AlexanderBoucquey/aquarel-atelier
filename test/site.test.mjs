@@ -124,13 +124,11 @@ test('about page shows both atelier photos with alt text in each language', asyn
 
 const between = (html, start, end) => html.slice(html.indexOf(start), html.indexOf(end, html.indexOf(start)));
 
-test('home: every featured work is a hero candidate; without JavaScript the first one shows', async () => {
+test('home: no big painting on top; the subjects come right after the header', async () => {
   const nl = await page('index.html');
-  const hero = between(nl, 'class="hero"', '</section>');
-  assert.equal(hero.match(/<template data-work=/g)?.length, 3);
-  for (const id of ['1a2b3c4d', '2b3c4d5e', '4d5e6f7a']) assert.ok(hero.includes(`<template data-work="${id}">`), id);
-  assert.ok(between(hero, '<noscript>', '</noscript>').includes(`href="${rel('/werk/1a2b3c4d/')}"`));
-  assert.ok(nl.includes('data-pick'));
+  assert.ok(!nl.includes('class="hero'));
+  assert.ok(between(nl, '<main', '</main>').indexOf('class="subjects"') > 0);
+  assert.ok(nl.includes(`content="${abs('/img/w/1a2b3c4d/og.jpg')}"`), 'link preview still uses the first featured work');
 });
 
 test('home: one card per subject linking to the filtered work page, with a count', async () => {

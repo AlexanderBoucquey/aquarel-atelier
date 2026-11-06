@@ -9,21 +9,8 @@ pageKey: home
 ---
 {%- import "macros.njk" as m -%}
 {%- set t = i18n[lang] -%}
-{#- Where there is a choice (data-pick), each candidate sits in a <template> and the script at the bottom shows one at
-    random per visit; without JavaScript the <noscript> copy of the first candidate shows. -#}
-{%- set heroes = atelier.heroes -%}
-{%- if heroes.length > 1 %}
-<section class="hero" data-pick>
-  <noscript>{{ m.heroFigure(heroes[0], lang) }}</noscript>
-  {%- for w in heroes %}
-  <template data-work="{{ w.id }}">{{ m.heroFigure(w, lang) }}</template>
-  {%- endfor %}
-</section>
-{%- elif heroes.length %}
-<section class="hero" data-shown="{{ heroes[0].id }}">{{ m.heroFigure(heroes[0], lang) }}</section>
-{%- else %}
-<p class="wrap empty">{{ t.work.empty }}</p>
-{%- endif %}
+{#- Where a subject has a choice (data-pick), each candidate sits in a <template> and the script at the bottom shows one
+    at random per visit; without JavaScript the <noscript> copy of the first candidate shows. -#}
 {%- if atelier.texts.home_intro %}
 <section class="intro wrap-narrow">{{ atelier.texts.home_intro[lang] | paragraphs | safe }}</section>
 {%- endif %}
@@ -67,6 +54,8 @@ pageKey: home
   {%- endif %}
   <p class="more"><a href="{{ 'work' | pageUrl(lang) }}">{{ t.home.allWork }} →</a></p>
 </section>
+{%- else %}
+<p class="wrap empty">{{ t.work.empty }}</p>
 {%- endif %}
 <script>
   // Runs while the page loads, so the chosen works appear at once. A work already on the page is not picked twice.

@@ -36,7 +36,6 @@ test('empty or missing tabs and folders give empty content, not a crash', () => 
   assert.deepEqual(content.texts, {});
   const site = finalizeContent(content, new Map());
   assert.equal(site.hero, null);
-  assert.deepEqual(site.heroes, []);
   assert.deepEqual(site.subjects, []);
   assert.deepEqual(site.techniques, []);
 });
@@ -58,13 +57,13 @@ test('finalizeContent fills image sizes and drops works whose image failed', () 
   assert.deepEqual(site.texts, { about: { nl: 'Over mij', en: 'Over mij' } });
 });
 
-test('heroes are all featured works (the page picks one per visit), or else the first work', () => {
+test('hero (the image for link previews) is the first featured work, or else the first work', () => {
   const site = finalizeContent(buildContent(raw(), registry, '2026-10-11'), metasFor('d1', 'd3', 'd4'));
-  assert.deepEqual(site.heroes.map((w) => w.title.nl), ['Haven']);
   assert.equal(site.hero.title.nl, 'Haven');
+  assert.equal(site.heroes, undefined);
   const none = raw();
   for (const r of none.sheets.werken.slice(1)) r[5] = false;
-  assert.deepEqual(finalizeContent(buildContent(none, registry, '2026-10-11'), metasFor('d1', 'd3', 'd4')).heroes.map((w) => w.title.nl), ['Haven']);
+  assert.equal(finalizeContent(buildContent(none, registry, '2026-10-11'), metasFor('d3', 'd4')).hero.title.nl, 'Duinen');
 });
 
 test('subjects: known ones first in fixed order, then new ones; picks are the featured works, else the first works', () => {
