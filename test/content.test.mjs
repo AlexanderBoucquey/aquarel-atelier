@@ -93,3 +93,11 @@ test('techniques: only those of published works, known ones first in fixed order
   const site = finalizeContent(buildContent(raw(), registry, '2026-10-11'), metasFor('d1', 'd3', 'd4'));
   assert.deepEqual(site.techniques.map((t) => t.key), ['aquarel', 'tekening', 'gemengde-techniek']);
 });
+
+test('works with an award come first; the rest keeps its order', () => {
+  const awarded = raw();
+  awarded.sheets.werken[0].push('Bekroning NL');
+  awarded.sheets.werken[4].push('Publieksprijs, Aquarelsalon 2026');
+  const site = finalizeContent(buildContent(awarded, registry, '2026-10-11'), metasFor('d1', 'd3', 'd4'));
+  assert.deepEqual(site.works.map((w) => w.title.nl), ['Bos', 'Haven', 'Duinen']);
+});

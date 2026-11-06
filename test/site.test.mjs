@@ -176,3 +176,11 @@ test('stylesheet and script addresses change with their content, so a browser ne
     assert.ok(html.includes(`"${rel(`/${file}`)}?v=${version}"`), file);
   }
 });
+
+test('work page: an awarded work is the first tile and is marked to stay visible under every filter', async () => {
+  const html = await page('werk/index.html');
+  const firstTile = between(html, '<li class="tile"', '</li>');
+  assert.ok(firstTile.includes('data-award'));
+  assert.ok(firstTile.includes(`href="${rel('/werk/1a2b3c4d/')}"`));
+  assert.equal(html.match(/data-award/g).length, 1);
+});

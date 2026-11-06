@@ -21,7 +21,7 @@
 {%- endmacro %}
 
 {% macro workTile(work, lang) -%}
-<li class="tile" style="--ar: {{ aspect(work) }}" data-subject="{{ work.subject.key if work.subject else '' }}" data-technique="{{ work.technique.key if work.technique else '' }}">
+<li class="tile" style="--ar: {{ aspect(work) }}" data-subject="{{ work.subject.key if work.subject else '' }}" data-technique="{{ work.technique.key if work.technique else '' }}"{% if work.award.nl %} data-award{% endif %}>
   <a href="{{ 'work' | pageUrl(lang, work.id) }}">{{ artImage(work.image, work.alt[lang], work.image | tileSizes) }}</a>
 </li>
 {%- endmacro %}

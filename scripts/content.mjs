@@ -43,7 +43,11 @@ export function finalizeContent(content, metas) {
     return meta ? { ...image, width: meta.width, height: meta.height, widths: meta.widths } : null;
   };
   const withImage = (e) => e && { ...e, image: fill(e.image) };
-  const works = content.works.map((w) => ({ ...w, image: fill(w.image) })).filter((w) => w.image);
+  // Awarded works first (stable sort: everything else keeps the sheet order).
+  const works = content.works
+    .map((w) => ({ ...w, image: fill(w.image) }))
+    .filter((w) => w.image)
+    .sort((a, b) => Number(Boolean(b.award?.nl)) - Number(Boolean(a.award?.nl)));
   const featured = works.filter((w) => w.featured);
   const heroes = featured.length ? featured : works.slice(0, 1);
   return {
